@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Pokemon Center - Skill Setup</title>
+    <style>
+        :root {
+            --bg-dark: #0f0f1a;
+            --neon-purple: #a100ff;
+            --neon-blue: #00f2ff;
+            --neon-red: #ff4d4d;
+            --accent-gold: #ffd700;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --modal-bg: rgba(10, 10, 20, 0.98);
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background: var(--bg-dark);
+            background-image: linear-gradient(rgba(15, 15, 26, 0.9), rgba(15, 15, 26, 0.9)), url('/img/어드벤처.png');
+            background-size: cover;
+            color: white; font-family: 'Malgun Gothic', sans-serif;
+            overflow: hidden;
+        }
+
+        .center-wrapper { display: flex; width: 100vw; height: 100vh; }
+
+        /* 사이드바 */
+        .sidebar {
+            width: 320px; background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px); border-right: 2px solid var(--neon-purple);
+            display: flex; flex-direction: column; padding: 25px;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-exit {
+            padding: 12px; background: transparent; border: 1px solid var(--neon-blue);
+            color: var(--neon-blue); font-weight: bold; border-radius: 5px;
+            cursor: pointer; margin-bottom: 30px; transition: 0.3s;
+            text-align: center; text-decoration: none; display: block;
+        }
+        .btn-exit:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
+
+        .party-list { display: flex; flex-direction: column; gap: 12px; }
+        .party-item {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            background: var(--glass-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .party-item.active { border-color: var(--neon-purple); background: rgba(161, 0, 255, 0.15); }
+        .party-item img { width: 55px; height: 55px; object-fit: contain; }
+
+        /* 메인 그리드 */
+        .skill-main { flex: 1; padding: 50px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .grid-header { width: 100%; max-width: 950px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+
+        .skill-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr);
+            gap: 20px; width: 100%; max-width: 950px;
+        }
+        .skill-card {
+            aspect-ratio: 1 / 1; background: var(--glass-bg);
+            border: 1px solid var(--border-color); border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.3s; cursor: pointer; position: relative; padding: 10px;
+            overflow: hidden;
+        }
+        .skill-card:not(.locked):hover { border-color: var(--neon-blue); transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+        .skill-card.locked { opacity: 0.3; filter: grayscale(100%) brightness(40%); cursor: not-allowed; }
+
+        .card-cost-badge {
+            position: absolute; top: 8px; left: 8px;
+            font-size: 11px; font-weight: bold; color: var(--neon-blue);
+            background: rgba(0, 188, 255, 0.15); padding: 2px 6px;
+            border-radius: 4px; border: 1px solid rgba(0, 242, 255, 0.3);
+        }
+
+        .count-badge {
+            position: absolute; bottom: 8px; right: 8px;
+            background: var(--neon-blue); color: black; font-weight: bold;
+            font-size: 11px; padding: 2px 6px; border-radius: 50%;
+            display: none;
+        }
+
+        .skill-img { width: 55px; height: 55px; object-fit: contain; margin-bottom: 10px; }
+        .skill-name { font-size: 14px; font-weight: bold; color: #efefef; text-align: center; }
+        .tier-badge { position: absolute; top: 8px; right: 8px; font-size: 10px; font-weight: bold; padding: 2px 5px; border-radius: 4px; background: rgba(0,0,0,0.5); }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); display: none;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--modal-bg); border: 2px solid var(--neon-purple);
+            padding: 30px; border-radius: 20px; width: 420px; text-align: center;
+            box-shadow: 0 0 30px rgba(161, 0, 255, 0.3);
+        }
+
+        .modal-desc-box {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px; padding: 15px; margin: 15px 0;
+            text-align: center; font-size: 15px; line-height: 1.6;
+            color: #dbdbe5; min-height: 50px;
+        }
+
+        .modal-cost-label {
+            color: var(--accent-gold); font-weight: bold; font-size: 12px;
+            border: 1px solid var(--accent-gold); padding: 2px 8px;
+            border-radius: 12px; background: rgba(255, 215, 0, 0.05);
+            display: inline-block; margin-top: 5px;
+        }
+
+        .quantity-control {
+            display: flex; justify-content: center; align-items: center;
+            gap: 20px; margin: 20px 0; background: rgba(255,255,255,0.05);
+            padding: 10px; border-radius: 10px;
+        }
+        .q-btn {
+            width: 35px; height: 35px; border-radius: 50%; border: 1px solid var(--neon-blue);
+            background: transparent; color: var(--neon-blue); font-size: 20px; cursor: pointer;
+        }
+        .q-btn:disabled { border-color: #444; color: #444; cursor: not-allowed; }
+        #modalCount { font-size: 24px; font-weight: bold; width: 40px; }
+
+        .modal-buttons { display: flex; justify-content: space-around; margin-top: 25px; gap: 10px; }
+        .btn-modal { flex: 1; padding: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-save { background: var(--neon-blue); color: black; border: none; }
+        .btn-close { background: transparent; color: white; border: 1px solid #555; }
+    </style>
+</head>
+<body>
+
+<div class="center-wrapper">
+    <aside class="sidebar">
+        <div class="btn-exit" onclick="location.href='/game/town'">마을로 이동</div>
+        <div style="font-size: 12px; color: var(--neon-purple); margin-bottom: 15px; font-weight: bold;">CURRENT FORMATION</div>
+        <div class="party-list" id="partyList"></div>
+    </aside>
+
+    <main class="skill-main">
+        <div class="grid-header">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 id="targetName" style="margin: 0;">포켓몬을 선택하세요</h2>
+                    <div id="totalCounter" style="font-size: 13px; color: #888; margin-top: 5px;">장착 스킬: 0 / 20</div>
+                </div>
+                <div id="stageIndicator" style="color: var(--neon-blue); font-weight: bold; font-size: 14px;"></div>
+            </div>
+        </div>
+        <div class="skill-grid" id="skillGrid"></div>
+    </main>
+</div>
+
+<div id="skillModal" class="modal-overlay">
+    <div class="modal-content">
+        <img id="modalSkillImg" src="" style="width: 80px; height: 80px; object-fit: contain;">
+        <h3 id="modalSkillName" style="color: var(--neon-blue); margin: 10px 0 2px 0;"></h3>
+
+        <div><span id="modalSkillCost" class="modal-cost-label">COST 0</span></div>
+
+        <div id="modalSkillDesc" class="modal-desc-box">스킬 설명 연산 중...</div>
+
+        <div class="quantity-control">
+            <button class="q-btn" onclick="changeCount(-1)">-</button>
+            <div id="modalCount">0</div>
+            <button class="q-btn" onclick="changeCount(1)">+</button>
+        </div>
+        <p id="limitWarning" style="font-size: 11px; color: var(--neon-red); height: 15px;"></p>
+
+        <div class="modal-buttons">
+            <button class="btn-modal btn-save" onclick="saveSkillSetup()">장착 완료</button>
+            <button class="btn-modal btn-close" onclick="closeModal('skillModal')">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentStage = 1; // 1, 2, 3 단계
+    let tempCount = 0; // 모달 내 임시 수량
+
+    const pokemonData = [
+        { id: 'pika', name: '피카츄', type: '전기' },
+        { id: 'pairi', name: '파이리', type: '불' },
+        { id: 'ggu', name: '꼬부기', type: '물' },
+        { id: 'seed', name: '이상해씨', type: '풀' }
+    ];
+
+    let allPediaSkills = [];
+    let currentSelectedSkill = null;
+    let currentPokemon = null;
+
+    async function init() {
+        document.getElementById('stageIndicator').innerText = `STAGE ${currentStage} 가동 중`;
+        await loadSkillPedia();
+        renderFormation();
+    }
+
+    async function loadSkillPedia() {
+        try {
+            const response = await fetch('/api/skills/pedia');
+            allPediaSkills = await response.json();
+        } catch (e) {
+            console.error("스킬 로드 실패", e);
+            // 💡 서버가 안 켜졌을 때를 대비한 하드코딩 예외 디버깅 데이터
+            allPediaSkills = [
+                { skillName: '아쿠아 볼트 프린트', cost: 3, tier: 1, type: '물', description: '적 단일 대상에게 강한 물줄기를 분사하여 피해를 입힙니다.', imgPath: 'default.png' },
+                { skillName: '타이달 룬 인포서', cost: 1, tier: 1, type: '물', description: '고대 타이달 기운을 모아 아군에게 유익한 효과를 줍니다.', imgPath: 'default.png' },
+                { skillName: '아쿠아리스 쉐어', cost: 2, tier: 1, type: '물', description: '전체 아군의 디버프를 해제하고 생명력을 소폭 정화합니다.', imgPath: 'default.png' }
+            ];
+        }
+    }
+
+    function renderFormation() {
+        const partyList = document.getElementById('partyList');
+        const savedIds = JSON.parse(localStorage.getItem('selectedFormation') || '["pika", "pairi", "ggu", "seed"]');
+
+        partyList.innerHTML = '';
+        savedIds.forEach((id, index) => {
+            const pInfo = pokemonData.find(p => p.id === id);
+            const item = document.createElement('div');
+            item.className = `party-item ${index === 0 ? 'active' : ''}`;
+            item.innerHTML = `<img src="/img/${pInfo.name}.webp"><div><b>${pInfo.name}</b></div>`;
+
+            item.onclick = () => {
+                document.querySelectorAll('.party-item').forEach(p => p.classList.remove('active'));
+                item.classList.add('active');
+                currentPokemon = pInfo;
+                updateSkillGrid(pInfo.name, pInfo.type);
+            };
+            partyList.appendChild(item);
+            if(index === 0) { currentPokemon = pInfo; updateSkillGrid(pInfo.name, pInfo.type); }
+        });
+    }
+
+    function updateSkillGrid(name, type) {
+        document.getElementById('targetName').innerText = `${name} 스킬 관리`;
+        const grid = document.getElementById('skillGrid');
+        grid.innerHTML = '';
+
+        const key = `skills_${currentPokemon.id}`;
+        const savedSkills = JSON.parse(localStorage.getItem(key) || '[]');
+
+        const total = savedSkills.reduce((sum, s) => sum + s.count, 0);
+        document.getElementById('totalCounter').innerText = `장착 스킬: ${total} / 20`;
+
+        const filteredSkills = allPediaSkills.filter(skill => skill.type.includes(type));
+
+        for (let i = 0; i < 25; i++) {
+            const skill = filteredSkills[i];
+            const card = document.createElement('div');
+            card.className = 'skill-card';
+
+            if (skill) {
+                const isLocked = skill.tier > currentStage;
+                if (isLocked) card.classList.add('locked');
+
+                const existing = savedSkills.find(s => s.name === skill.skillName);
+                const count = existing ? existing.count : 0;
+
+                // 💡 카드 렌더링 시 좌측 상단에 cost 정보 배치 추가 완료
+                card.innerHTML = `
+                    <div class="card-cost-badge">C ${skill.cost}</div>
+                    <div class="tier-badge">T${skill.tier}</div>
+                    <img src="/img/skills/${skill.imgPath}" class="skill-img" onerror="this.src='/img/skills/default.png'">
+                    <div class="skill-name">${skill.skillName}</div>
+                    <div class="count-badge" style="display: ${count > 0 ? 'block' : 'none'}">${count}</div>
+                `;
+                if (!isLocked) card.onclick = () => openSkillModal(skill, count);
+            } else {
+                card.innerHTML = `<div style="color:#444; font-size:10px;">EMPTY</div>`;
+            }
+            grid.appendChild(card);
+        }
+    }
+
+    function openSkillModal(skill, count) {
+        currentSelectedSkill = skill;
+        tempCount = count;
+
+        // 💡 텍스트 및 DB 데이터 기반 데이터 매핑 처리
+        document.getElementById('modalSkillName').innerText = skill.skillName;
+        document.getElementById('modalSkillCost').innerText = `COST ● ${skill.cost}`;
+        document.getElementById('modalSkillDesc').innerHTML = skill.description || '이 스킬은 상세 설명 정보가 기술되어 있지 않습니다.';
+
+        document.getElementById('modalSkillImg').src = `/img/skills/${skill.imgPath}`;
+        document.getElementById('modalSkillImg').onerror = function() { this.src = '/img/skills/default.png'; };
+
+        document.getElementById('modalCount').innerText = tempCount;
+        document.getElementById('limitWarning').innerText = '';
+        document.getElementById('skillModal').style.display = 'flex';
+    }
+
+    function changeCount(delta) {
+        const key = `skills_${currentPokemon.id}`;
+        const savedSkills = JSON.parse(localStorage.getItem(key) || '[]');
+
+        const otherTotal = savedSkills
+            .filter(s => s.name !== currentSelectedSkill.skillName)
+            .reduce((sum, s) => sum + s.count, 0);
+
+        const newCount = tempCount + delta;
+
+        if (newCount < 0) return;
+        if (newCount > 3) {
+            document.getElementById('limitWarning').innerText = '한 스킬당 최대 3개까지 가능합니다.';
+            return;
+        }
+        if (otherTotal + newCount > 20) {
+            document.getElementById('limitWarning').innerText = '전체 스킬 합계는 20개를 넘을 수 없습니다.';
+            return;
+        }
+
+        tempCount = newCount;
+        document.getElementById('modalCount').innerText = tempCount;
+        document.getElementById('limitWarning').innerText = '';
+    }
+
+    function saveSkillSetup() {
+        const key = `skills_${currentPokemon.id}`;
+        let savedSkills = JSON.parse(localStorage.getItem(key) || '[]');
+
+        savedSkills = savedSkills.filter(s => s.name !== currentSelectedSkill.skillName);
+
+        if (tempCount > 0) {
+            savedSkills.push({
+                name: currentSelectedSkill.skillName,
+                count: tempCount
+            });
+        }
+
+        localStorage.setItem(key, JSON.stringify(savedSkills));
+        closeModal('skillModal');
+        updateSkillGrid(currentPokemon.name, currentPokemon.type);
+    }
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    window.onload = init;
+</script>
+</body>
+</html>

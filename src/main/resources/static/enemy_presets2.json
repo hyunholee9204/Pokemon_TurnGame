@@ -1,0 +1,176 @@
+{
+  "n31": [
+    { "id": "chikorita", "name": "치코리타", "hp": 150, "maxHp": 150, "img": "치코리타.webp", "speed": 105, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "bayleef", "name": "베이리프", "hp": 135, "maxHp": 135, "img": "베이리프.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "meganium", "name": "메가니움", "hp": 140, "maxHp": 140, "img": "메가니움.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "celebi", "name": "세레비", "hp": 140, "maxHp": 140, "img": "세레비.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n32": [
+    { "id": "poliwag", "name": "발챙이", "hp": 160, "maxHp": 160, "img": "발챙이.webp", "speed": 99, "currentCost": 3, "burnStacks": 0, "shield": 50, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "poliwhirl", "name": "슈륙챙이", "hp": 140, "maxHp": 140, "img": "슈륙챙이.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "poliwrath", "name": "강챙이", "hp": 150, "maxHp": 150, "img": "강챙이.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "suicune", "name": "스이쿤", "hp": 155, "maxHp": 155, "img": "스이쿤.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n33": [
+    { "id": "geodude", "name": "꼬마돌", "hp": 145, "maxHp": 145, "img": "야돈.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "graveler", "name": "데구리", "hp": 130, "maxHp": 130, "img": "야도란.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "golem", "name": "딱구리", "hp": 130, "maxHp": 130, "img": "쥬쥬.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "sandy_shocks", "name": "모래털가죽", "hp": 140, "maxHp": 140, "img": "모래털가죽.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n34": [
+    { "id": "horsea", "name": "쏘드라", "hp": 140, "maxHp": 140, "img": "냐오불.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "seadra", "name": "시드라", "hp": 130, "maxHp": 130, "img": "냐오히트.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "kingdra", "name": "킹드라", "hp": 125, "maxHp": 125, "img": "냐오히트.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "veluza", "name": "가비루사", "hp": 135, "maxHp": 135, "img": "가비루사.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n35": [
+    { "id": "seedot", "name": "도토링", "hp": 145, "maxHp": 145, "img": "도토링.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "nuzleaf", "name": "잎새코", "hp": 135, "maxHp": 135, "img": "잎새코.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "shiftry", "name": "다탱구", "hp": 135, "maxHp": 135, "img": "다탱구.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "shaymin", "name": "쉐이미", "hp": 140, "maxHp": 140, "img": "쉐이미.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n36": [
+    { "id": "fuecoco", "name": "뜨아거", "hp": 140, "maxHp": 140, "img": "뜨아거.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "crocalor", "name": "악뜨거", "hp": 130, "maxHp": 130, "img": "악뜨거.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "skeledirge", "name": "라우드본", "hp": 130, "maxHp": 130, "img": "라우드본.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "megamortar", "name": "마그마번", "hp": 135, "maxHp": 135, "img": "마그마번.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n38": [
+    { "id": "shinx", "name": "꼬링크", "hp": 160, "maxHp": 160, "img": "꼬링크.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "luxio", "name": "럭시오", "hp": 160, "maxHp": 160, "img": "럭시오.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "luxray", "name": "렌트라", "hp": 160, "maxHp": 160, "img": "렌트라.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "pachirisu", "name": "파치리스", "hp": 160, "maxHp": 160, "img": "파치리스.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0, "skills": [] }
+  ],
+  "n39": [
+    { "id": "carkol", "name": "탄차곤", "hp": 160, "maxHp": 160, "img": "탄차곤.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "coalossal", "name": "석탄산", "hp": 160, "maxHp": 160, "img": "석탄산.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "groudon", "name": "그란돈", "hp": 160, "maxHp": 160, "img": "그란돈.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "primal_groudon", "name": "원시그란돈", "hp": 160, "maxHp": 160, "img": "원시그란돈.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n40": [
+    { "id": "cherubi", "name": "체리버", "hp": 160, "maxHp": 160, "img": "체리버.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks" : 0 , "skills": [] },
+    { "id": "cherrim", "name": "체리꼬", "hp": 160, "maxHp": 160, "img": "체리꼬.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "cacnea", "name": "선인왕", "hp": 160, "maxHp": 160, "img": "선인왕.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "cacturne", "name": "밤선인", "hp": 160, "maxHp": 160, "img": "밤선인.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n41": [
+    { "id": "marrep", "name": "메리프", "hp": 160, "maxHp": 160, "img": "메리프.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "flaaffy", "name": "보송송", "hp": 160, "maxHp": 160, "img": "보송송.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "ampharos", "name": "전룡", "hp": 160, "maxHp": 160, "img": "전룡.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "mega_ampharos", "name": "메가전룡", "hp": 160, "maxHp": 160, "img": "메가전룡.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n43": [
+    { "id": "litleo", "name": "레오꼬", "hp": 160, "maxHp": 160, "img": "레오꼬.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "pyroar", "name": "화염레오", "hp": 160, "maxHp": 160, "img": "화염레오.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "darumaka", "name": "달막화", "hp": 160, "maxHp": 160, "img": "달막화.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "darmanitan", "name": "불비달마", "hp": 160, "maxHp": 160, "img": "불비달마.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n44": [
+    { "id": "fennekin", "name": "푸호꼬", "hp": 160, "maxHp": 160, "img": "푸호꼬.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "braixen", "name": "테르나", "hp": 160, "maxHp": 160, "img": "테르나.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "delphox", "name": "마폭시", "hp": 160, "maxHp": 160, "img": "마폭시.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "mega_delphox", "name": "메가마폭시", "hp": 160, "maxHp": 160, "img": "메가마폭시.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n45": [
+    { "id": "kabuto", "name": "투구", "hp": 160, "maxHp": 160, "img": "투구.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "kabutops", "name": "투구푸스", "hp": 160, "maxHp": 160, "img": "투구푸스.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "finneon", "name": "형광어", "hp": 160, "maxHp": 160, "img": "형광어.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "lumineon", "name": "네오라이트", "hp": 160, "maxHp": 160, "img": "네오라이트.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n47": [
+    { "id": "lileep", "name": "릴링", "hp": 160, "maxHp": 160, "img": "릴링.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "cradily", "name": "릴리요", "hp": 160, "maxHp": 160, "img": "릴리요.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "exeggcute", "name": "아라리", "hp": 160, "maxHp": 160, "img": "아라리.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "exeggutor", "name": "나시", "hp": 160, "maxHp": 160, "img": "나시.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n48": [
+    { "id": "litwick", "name": "불켜미", "hp": 160, "maxHp": 160, "img": "불켜미.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "lampent", "name": "램프라", "hp": 160, "maxHp": 160, "img": "램프라.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "chandelure", "name": "샹델라", "hp": 160, "maxHp": 160, "img": "샹델라.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "gigantamax_coalossal", "name": "거다이맥스 석탄산", "hp": 160, "maxHp": 160, "img": "석탄산(거다이맥스).webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n49": [
+    { "id": "joltik", "name": "파쪼옥", "hp": 160, "maxHp": 160, "img": "파쪼옥.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "galvantula", "name": "전툴라", "hp": 160, "maxHp": 160, "img": "전툴라.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "iron_hands", "name": "무쇠손", "hp": 160, "maxHp": 160, "img": "무쇠손.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "iron_thorns", "name": "무쇠가시", "hp": 160, "maxHp": 160, "img": "무쇠가시.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0, "skills": [] }
+  ],
+  "n50": [
+    { "id": "magby", "name": "마그비", "hp": 160, "maxHp": 160, "img": "마그비.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "magmar", "name": "마그마", "hp": 160, "maxHp": 160, "img": "마그마.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "salandit", "name": "야도뇽", "hp": 160, "maxHp": 160, "img": "야도뇽.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "salazzle", "name": "염뉴트", "hp": 160, "maxHp": 160, "img": "염뉴트.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n51": [
+    { "id": "mudkip", "name": "물짱이", "hp": 160, "maxHp": 160, "img": "물짱이.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "marshtomp", "name": "늪짱이", "hp": 160, "maxHp": 160, "img": "늪짱이.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "swampert", "name": "대짱이", "hp": 160, "maxHp": 160, "img": "대짱이.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "golisopod", "name": "갑주무사", "hp": 160, "maxHp": 160, "img": "갑주무사.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n52": [
+    { "id": "yamper", "name": "멍파치", "hp": 160, "maxHp": 160, "img": "멍파치.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "boltund", "name": "펄스멍", "hp": 160, "maxHp": 160, "img": "펄스멍.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "charjabug", "name": "전지충이", "hp": 160, "maxHp": 160, "img": "전지충이.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "dedenne", "name": "데덴네", "hp": 160, "maxHp": 160, "img": "데덴네.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n53": [
+    { "id": "staryu", "name": "별가사리", "hp": 160, "maxHp": 160, "img": "고라파덕.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "starmie", "name": "아쿠스타", "hp": 160, "maxHp": 160, "img": "골덕.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "magikarp", "name": "잉어킹", "hp": 160, "maxHp": 160, "img": "잉어킹.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "gyarados", "name": "갸라도스", "hp": 160, "maxHp": 160, "img": "갸라도스.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n54": [
+    { "id": "chespin", "name": "도치마론", "hp": 160, "maxHp": 160, "img": "야나프.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "quilladin", "name": "도치보구", "hp": 160, "maxHp": 160, "img": "야나키.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "chesnaught", "name": "브리가론", "hp": 160, "maxHp": 160, "img": "브리카론.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "tapu_bulu", "name": "카푸브루루", "hp": 160, "maxHp": 160, "img": "카푸브루루.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n55": [
+    { "id": "marill", "name": "마릴", "hp": 160, "maxHp": 160, "img": "마릴.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "azumarill", "name": "마릴리", "hp": 160, "maxHp": 160, "img": "마릴리.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "wooper", "name": "우파", "hp": 160, "maxHp": 160, "img": "우파.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "quagsire", "name": "누오", "hp": 160, "maxHp": 160, "img": "누오.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n56": [
+    { "id": "rotom", "name": "로토무", "hp": 160, "maxHp": 160, "img": "로토무.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "hitrotom", "name": "히트로토무", "hp": 160, "maxHp": 160, "img": "히트로토무.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "washrotom", "name": "워시로토무", "hp": 160, "maxHp": 160, "img": "워시로토무.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "prostrotom", "name": "프로스트로토무", "hp": 160, "maxHp": 160, "img": "프로스트로토무.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n57": [
+    { "id": "shroomish", "name": "버섯꼬", "hp": 160, "maxHp": 160, "img": "버섯꼬.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "breloom", "name": "버섯모", "hp": 160, "maxHp": 160, "img": "버섯모.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "snover", "name": "눈쓰개", "hp": 160, "maxHp": 160, "img": "눈쓰개.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "abomasnow", "name": "눈설왕", "hp": 160, "maxHp": 160, "img": "눈설왕.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n58": [
+    { "id": "charmander", "name": "파이리", "hp": 160, "maxHp": 160, "img": "파이리.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "charmeleon", "name": "리자드", "hp": 160, "maxHp": 160, "img": "리자드.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "charizard", "name": "리자몽", "hp": 160, "maxHp": 160, "img": "리자몽.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "gouging_fire", "name": "꿰뚫는화염", "hp": 160, "maxHp": 160, "img": "꿰뚫는화염.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n59": [
+    { "id": "scorbunny", "name": "염버니", "hp": 160, "maxHp": 160, "img": "염버니.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "raboot", "name": "레비풋", "hp": 160, "maxHp": 160, "img": "레비풋.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "cinderace", "name": "에이스번", "hp": 160, "maxHp": 160, "img": "에이스번.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "iron_moth", "name": "무쇠독나방", "hp": 160, "maxHp": 160, "img": "무쇠독나방.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "n60": [
+    { "id": "carvanha", "name": "샤프니아", "hp": 160, "maxHp": 160, "img": "샤프니아.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "sharpedo", "name": "샤크니아", "hp": 160, "maxHp": 160, "img": "샤크니아.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "wailmer", "name": "고래왕자", "hp": 160, "maxHp": 160, "img": "고래왕자.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+    { "id": "wailord", "name": "고래왕", "hp": 160, "maxHp": 160, "img": "고래왕.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+  ],
+  "boss2": [
+    [
+      { "id": "tepig", "name": "뚜꾸리", "hp": 160, "maxHp": 160, "img": "뚜꾸리.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+      {"id": "pignite", "name": "차오꿀", "hp": 160, "maxHp": 160, "img": "차오꿀.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+      { "id": "emboar", "name": "염무왕", "hp": 160, "maxHp": 160, "img": "염무왕.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] },
+      { "id": "rashiram", "name": "레시라무", "hp": 160, "maxHp": 160, "img": "레시라무.webp", "speed": 95, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": [] }
+    ],
+    [
+      { "id": "charcadet", "name": "카르본", "hp": 130, "maxHp": 130, "img": "카르본.webp", "speed": 102, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": ["회오리불꽃","도깨비불"] },
+      { "id": "armarouge", "name": "카디나르마", "hp": 90, "maxHp": 90, "img": "카디나르마.webp", "speed": 99, "currentCost": 3, "burnStacks": 0, "shield": 0, "reflectThorns": 0, "shockStacks": 0 , "skills": ["회오리불꽃","회오리불꽃"] }
+    ]
+  ]
+}

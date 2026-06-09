@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>TurnGame of Pokemon - Menu</title>
+    <link rel="stylesheet" th:href="@{/css/HomeMenu.css}">
+</head>
+<body class="menu-body">
+<div class="menu-container">
+    <h1 class="game-title">TurnGame of Pokemon</h1>
+
+    <div class="button-group">
+        <button class="menu-btn" th:onclick="|location.href='@{/slots}'|">게임 목록</button>
+        <button class="menu-btn" th:onclick="|location.href='@{/pokedex}'|">포켓몬 도감</button>
+        <button class="menu-btn" th:onclick="|location.href='@{/skill}'|">스킬 도감</button>
+        <button class="menu-btn" onclick="window.close()">게임 종료</button>
+    </div>
+</div>
+</body>
+</html>

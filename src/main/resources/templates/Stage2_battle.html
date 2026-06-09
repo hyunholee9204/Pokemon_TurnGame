@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Pokemon Battle - Stage 2</title>
+    <link rel="stylesheet" th:href="@{/css/Stage1_battle.css}">
+</head>
+<body>
+<div id="skillTooltip">
+    <div class="tt-header">
+        <img src="" class="tt-icon" id="ttIcon">
+        <div>
+            <div class="tt-name" id="ttName">스킬명</div>
+            <div id="ttTier" style="color: #ffd700; font-size: 11px;">★</div>
+        </div>
+    </div>
+    <div class="tt-desc" id="ttDesc">설명</div>
+    <div class="tt-footer">
+        <span id="ttType">속성</span>
+        <span style="border: 1px solid var(--accent-gold); padding: 2px 10px; border-radius: 12px;">
+            COST ● <span id="ttCost">0</span>
+        </span>
+    </div>
+</div>
+<div class="result-modal-overlay" id="resultModal">
+    <div class="result-modal-box">
+        <div class="result-title" id="modalTitle">VICTORY</div>
+        <div class="result-content">
+            <h4 style="margin: 0 0 12px 0; color: #aaa; font-size: 14px;">전투 보상</h4>
+            <div class="reward-row">
+                <span>🪙 획득 골드</span>
+                <span class="reward-val gold" id="rewardGold">+ 0 G</span>
+            </div>
+        </div>
+        <button class="btn-modal-action" id="modalBtn" onclick="handleModalAction()">확인</button>
+    </div>
+</div>
+<div class="turn-order-panel" id="turnOrderPanel"></div>
+<div id="battleActionMessage" class="battle-message-box"></div>
+<div class="battle-field">
+    <div class="team" id="playerTeam" style="display: flex; flex-direction: row-reverse; gap: 30px;"></div>
+    <div class="team" id="enemyTeam" style="display: flex; gap: 30px;"></div>
+</div>
+<div class="bottom-ui">
+    <div class="control-panel">
+        <div class="control-top">
+            <div class="cost-label" id="costTextDisplay">COST 3 / 8</div>
+            <div id="battleStageDisplay"
+                 style="color: #ffcc00; font-size: 12px; font-weight: bold; background: #222; padding: 3px 8px; border-radius: 4px; border: 1px solid #444;">
+                STAGE 2 - 일반 전투
+            </div>
+        </div>
+        <div class="cost-bar-container" id="costBarGrid">
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+            <div class="cost-block"></div>
+        </div>
+        <button class="btn-end-turn" onclick="nextTurn()">TURN END</button>
+    </div>
+    <div class="skill-container" id="skillContainer"></div>
+</div>
+<script>
+    let allSkillPedia = [];
+    let playerTeamData = [];
+    let enemyTeamData = [];
+    let turnOrder = [];
+    let globalSkillRegistry = [];
+    let currentTurnIndex = 0;
+
+    let selectedSkillInfo = null;
+    let selectedSkillCardDOM = null;
+    let isBattleEnded = false;
+
+    const RECOVERY_AMOUNT = 3;
+    const MAX_COST = 8;
+
+    const CURRENT_STAGE_NUM = 2;
+    let savedNodeType = localStorage.getItem('currentBattleNodeType') || 'node-label';
+    let CURRENT_BATTLE_TYPE = 'NORMAL';
+
+    if (savedNodeType.includes('boss-node')) {
+        CURRENT_BATTLE_TYPE = 'BOSS';
+        document.body.style.backgroundImage = "url('/img/2스테이지_보스.png')";
+    } else if (savedNodeType.includes('curse-node')) {
+        CURRENT_BATTLE_TYPE = 'CURSED';
+        document.body.style.backgroundImage = "url('/img/2스테이지_불타는폐허.png')";
+    } else {
+        CURRENT_BATTLE_TYPE = 'NORMAL';
+        document.body.style.backgroundImage = "url('/img/2스테이지_일반전투.png')";
+    }
+
+    let nextLocationUrl = '/game/adventure';
+
+    async function initBattle() {
+        try {
+            await loadSkillData();
+
+            const skillRes = await fetch('http://localhost:8080/enemy_skills.json');
+            if (!skillRes.ok) {
+                throw new Error("적군 스킬 도감(enemy_skills.json)을 불러오는 데 실패했습니다.");
+            }
+            globalSkillRegistry = await skillRes.json();
+            console.log("적 스킬 도감 로드 완료! 총 개수:", globalSkillRegistry.length);
+
+            loadPlayerTeam();
+
+            const typeNames = { 'NORMAL': '일반 전투', 'CURSED': '저주의 땅', 'BOSS': '👑 보스전' };
+            const stageDisplayEl = document.getElementById('battleStageDisplay');
+            if (stageDisplayEl) {
+                stageDisplayEl.innerText = `STAGE ${CURRENT_STAGE_NUM} - ${typeNames[CURRENT_BATTLE_TYPE]}`;
+            }
+
+            const activeNodeId = localStorage.getItem('currentBattleNodeId') || 'n2';
+            console.log(`[⚔️ 전투 시작] 진입한 노드 위치: ${activeNodeId} | 난이도: ${CURRENT_BATTLE_TYPE}`);
+
+            const jsonPath = 'http://localhost:8080/enemy_presets2.json';
+            const response = await fetch(jsonPath);
+            if (!response.ok) {
+                throw new Error(`적 프리셋 데이터를 불러오는 데 실패했습니다. (Status: ${response.status})`);
+            }
+
+            const enemyPresets = await response.json();
+            enemyTeamData = enemyPresets[activeNodeId] || enemyPresets['n2'];
+            renderTeam('enemyTeam', enemyTeamData);
+
+            turnOrder = [...playerTeamData, ...enemyTeamData].sort((a, b) => b.speed - a.speed);
+            renderTurnOrder();
+            startTurn();
+
+            const tt = document.getElementById('skillTooltip');
+            if (tt) {
+                window.addEventListener('mousemove', (e) => {
+                    if(tt.style.display === 'block') {
+                        tt.style.left = (e.clientX + 20) + 'px';
+                        tt.style.top = (e.clientY - 220) + 'px';
+                    }
+                });
+            }
+        } catch (error) {
+            console.error("전투 초기화 중 치명적인 오류가 발생했습니다:", error);
+        }
+    }
+
+    async function loadSkillData() {
+        try {
+            const response = await fetch('/api/skills/pedia');
+            allSkillPedia = await response.json();
+        } catch (error) {
+            allSkillPedia = JSON.parse(localStorage.getItem('allSkillPedia') || '[]');
+        }
+
+        if (allSkillPedia.length === 0) {
+            allSkillPedia = [
+                { skillName: '몸통박치기', cost: 1, power: 35, hitCount: 1, skillCategory: 'ATK_SINGLE', description: '적 단일 대상에게 35의 피해를 준다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 },
+                { skillName: '불꽃세례', cost: 1, power: 15, hitCount: 1, skillCategory: 'ATK_SINGLE', description: '불꽃을 뿜어 15의 피해를 주고, 적에게 **[🔥화상]** 스택을 1개 쌓습니다.', imgPath: 'default.png', statusEffect: 'BURN', reflect_damage: 0 },
+                { skillName: '파도타기', cost: 3, power: 20, hitCount: 1, skillCategory: 'ATK_MULTI', description: '거대한 파드로 적 전체에게 각각 20의 피해를 준다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 },
+                { skillName: '단단해지기', cost: 1, power: 30, hitCount: 1, skillCategory: 'DEF_SINGLE', description: '지정한 아군에게 단단한 보호막 30🛡️을 부여합니다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 },
+                { skillName: '철벽방어', cost: 2, power: 20, hitCount: 1, skillCategory: 'DEF_MULTI', description: '생존해 있는 모든 아군 전체에게 각각 보호막 20🛡️을 아우릅니다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 },
+                { skillName: '가시갑옷', cost: 2, power: 15, hitCount: 1, skillCategory: 'DEF_SINGLE', description: '보호막 15🛡️를 얻고, 이번 턴 피격 시 적에게 무조건 10💥의 반사 피해를 되돌려줍니다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 10 },
+                { skillName: '아쿠아링', cost: 1, power: 11, hitCount: 1, skillCategory: 'ATK_DEF_SINGLE', description: '적에게 11💧의 피해를 입히고, 나에게 11🛡️의 보호막을 생성합니다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 },
+                { skillName: '번개복권', cost: 2, power: 0, hitCount: 1, skillCategory: 'GACHA', description: '🎲 50% [ 나 ⚡ 1⏳ ] vs 50% [ 적 랜덤 ⚡ 1⏳ ]', imgPath: 'default.png', statusEffect: 'SHOCK', reflect_damage: 0 },
+                { skillName: 'HP회복', cost: 2, power: 40, hitCount: 1, skillCategory: 'HEAL_SINGLE', description: '선택한 아군 1칭구의 HP를 40💚 회복합니다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 },
+                { skillName: '생명의어머니', cost: 3, power: 25, hitCount: 1, skillCategory: 'HEAL_MULTI', description: '생존해 있는 모든 아군 전체의 HP를 각각 25💚 치유합니다.', imgPath: 'default.png', statusEffect: null, reflect_damage: 0 }
+            ];
+        }
+    }
+
+    function loadPlayerTeam() {
+        const formation = JSON.parse(localStorage.getItem('selectedFormation') || '[]');
+        const savedHps = JSON.parse(localStorage.getItem('playerBattleHps') || '{}');
+
+        const pokemonDB = {
+            'ggu': { name: '꼬부기', hp: 180, speed: 110, img: '꼬부기.webp' },
+            'pika': { name: '피카츄', hp: 110, speed: 105, img: '피카츄.webp' },
+            'pairi': { name: '파이리', hp: 130, speed: 95, img: '파이리.webp' },
+            'seed': { name: '이상해씨', hp: 150, speed: 90, img: '이상해씨.webp' }
+        };
+
+        const finalFormation = formation.length > 0 ? formation : ['ggu', 'seed'];
+
+        playerTeamData = finalFormation.map(id => {
+            const baseData = pokemonDB[id];
+            if(!baseData) return null;
+            const currentHp = savedHps[id] !== undefined ? savedHps[id] : baseData.hp;
+
+            return {
+                ...baseData,
+                id,
+                hp: currentHp,
+                maxHp: baseData.hp,
+                isPlayer: true,
+                currentCost: 0,
+                burnStacks: 0,
+                shield: 0,
+                reflectThorns: 0,
+                shockStacks: 0
+            };
+        }).filter(Boolean);
+        renderTeam('playerTeam', playerTeamData);
+    }
+
+    function renderTeam(containerId, list) {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        container.innerHTML = '';
+        list.forEach(p => {
+            const isDead = p.hp <= 0;
+            const slot = document.createElement('div');
+            slot.className = `pokemon-slot ${isDead ? 'dead' : ''}`;
+            slot.setAttribute('data-id', p.id);
+
+            slot.onclick = () => handleUnitTargetClick(p, containerId);
+
+            const hpPercent = Math.max(0, (p.hp / p.maxHp) * 100);
+            const shieldPercent = Math.min(100, (p.shield / p.maxHp) * 100);
+
+            let statusHtml = '<div class="status-wrapper">';
+            if (p.burnStacks && p.burnStacks > 0) statusHtml += `<div class="status-badge-container"><span class="status-badge-text">🔥 ${p.burnStacks}</span></div>`;
+            if (p.shield && p.shield > 0) statusHtml += `<div class="status-badge-container"><span class="status-badge-text">🛡️ ${p.shield}</span></div>`;
+            if (p.reflectThorns && p.reflectThorns > 0) statusHtml += `<div class="thorns-badge-container"><span class="thorns-badge-text">💥 ${p.reflectThorns}</span></div>`;
+            if (p.shockStacks && p.shockStacks > 0) statusHtml += `<div class="shock-badge-container"><span class="shock-badge-text">⚡ 감전</span></div>`;
+            statusHtml += '</div>';
+
+            const dispHp = Math.max(0, p.hp);
+            const shieldText = p.shield > 0 ? ` (+${p.shield}🛡️)` : '';
+
+            slot.innerHTML = `
+                ${statusHtml}
+                <div class="hp-container">
+                    <div class="hp-bar-bg">
+                        <div class="hp-bar-fill" style="width:${hpPercent}%"></div>
+                        <div class="shield-bar-fill" style="width:${hpPercent + shieldPercent}%"></div>
+                    </div>
+                    <div class="hp-text">${dispHp}/${p.maxHp}${shieldText}</div>
+                </div>
+                <img src="/img/${p.img}" class="pokemon-img" onerror="this.src='/img/default.png'">
+                <div style="font-size:13px; margin-top:5px; font-weight:bold;">${p.name}</div>
+            `;
+            container.appendChild(slot);
+        });
+    }
+
+    function renderTurnOrder() {
+        const panel = document.getElementById('turnOrderPanel');
+        if(!panel) return;
+        panel.innerHTML = '';
+        turnOrder.forEach((unit, idx) => {
+            if (unit.hp <= 0) return;
+            const box = document.createElement('div');
+            box.className = 'order-unit' + (idx === currentTurnIndex ? ' active' : '');
+            box.innerHTML = `<div class="speed-badge">${unit.speed}</div><img src="/img/${unit.img}" onerror="this.src='/img/default.png'">`;
+            panel.appendChild(box);
+        });
+    }
+
+    function updateCostBarUI(currentCost) {
+        const display = document.getElementById('costTextDisplay');
+        if(display) display.innerText = `COST ${currentCost} / ${MAX_COST}`;
+        const blocks = document.querySelectorAll('#costBarGrid .cost-block');
+        const nextTurnExpected = Math.min(currentCost + RECOVERY_AMOUNT, MAX_COST);
+
+        blocks.forEach((block, idx) => {
+            block.className = 'cost-block';
+            if (idx < currentCost) block.classList.add('active');
+            else if (idx >= currentCost && idx < nextTurnExpected) block.classList.add('preview');
+        });
+    }
+
+    function startTurn() {
+        if (isBattleEnded) return;
+        const currentUnit = turnOrder[currentTurnIndex];
+
+        if (!currentUnit || currentUnit.hp <= 0) { nextTurn(); return; }
+
+        if (currentUnit.skipNextTurn === true) {
+            currentUnit.skipNextTurn = false;
+            alert(`💨 [${currentUnit.name}] 카오틱 볼트의 반동으로 턴 강제 스킵!`);
+            nextTurn();
+            return;
+        }
+
+        if (currentUnit.burnStacks && currentUnit.burnStacks > 0) {
+            const burnDamage = currentUnit.burnStacks;
+            currentUnit.hp -= burnDamage;
+            renderTeam('playerTeam', playerTeamData);
+            renderTeam('enemyTeam', enemyTeamData);
+
+            if (currentUnit.hp <= 0) { checkBattleOver(); nextTurn(); return; }
+        }
+
+        if (currentUnit.isPlayer) currentUnit.currentCost = Math.min(currentUnit.currentCost + RECOVERY_AMOUNT, MAX_COST);
+
+        const skillContainer = document.getElementById('skillContainer');
+        if(!skillContainer) return;
+        skillContainer.innerHTML = '';
+        cancelTargeting();
+        renderTurnOrder();
+        updateCostBarUI(currentUnit.currentCost);
+
+        if (currentUnit.isPlayer) {
+
+            const deck = JSON.parse(localStorage.getItem(`skills_${currentUnit.id}`) || '[]');
+            let fullList = [];
+            let globalSlotIdx = 0;
+            deck.forEach(s => {
+                for(let i = 0; i < s.count; i++) {
+                    fullList.push({ name: s.name, slotIndex: globalSlotIdx });
+                    globalSlotIdx++;
+                }
+            });
+
+            if (fullList.length === 0) {
+                const fallbackNames = ['몸통박치기', '불꽃세례', '파도타기', '단단해지기', '철벽방어', '가시갑옷', '번개복권', 'HP회복', '생명의어머니'];
+                fullList = fallbackNames.map((name, idx) => ({ name, slotIndex: idx }));
+            }
+
+            const hand = fullList.sort(() => 0.5 - Math.random()).slice(0, 5);
+            const enhancedDataMap = JSON.parse(localStorage.getItem('playerSkillsMapData') || '{}');
+
+            hand.forEach(handItem => {
+                const skillName = handItem.name;
+                const slotIdx = handItem.slotIndex;
+                const card = document.createElement('div');
+                card.className = 'skill-card';
+
+                const baseSkillInfo = allSkillPedia.find(s => s.skillName === skillName) || { cost: 1, power: 10, hitCount: 1, skillCategory: 'ATK_SINGLE', description: '기본 스킬', reflect_damage: 0 };
+                const uniqueKey = `${currentUnit.id}_slot_${slotIdx}_${skillName}`;
+
+                let livePower = baseSkillInfo.power;
+                let liveLevel = 1;
+                if (enhancedDataMap[uniqueKey]) {
+                    livePower = enhancedDataMap[uniqueKey].power;
+                    liveLevel = enhancedDataMap[uniqueKey].level;
+                }
+
+                const runtimeSkillInfo = { ...baseSkillInfo, power: livePower, level: liveLevel };
+
+                card.innerHTML = `
+                    <div class="skill-cost-badge">C ${runtimeSkillInfo.cost}</div>
+                    <img src="/img/skills/${skillName}.png" class="skill-icon" onerror="this.src='/img/skills/default.png'">
+                    <span class="skill-name-label">${skillName}</span>
+                    <div class="skill-lvl-indicator" style="font-size:10px; color:#00f2ff; font-weight:bold; text-align:center; margin-top:-2px;">Lv.${liveLevel}</div>
+                `;
+
+                if (currentUnit.currentCost < runtimeSkillInfo.cost) card.classList.add('disabled');
+
+                card.onclick = () => {
+                    if (currentUnit.currentCost < runtimeSkillInfo.cost) return;
+                    selectSkill(runtimeSkillInfo, card);
+                };
+
+                card.addEventListener('mouseenter', () => {
+                    const ttIcon = document.getElementById('ttIcon');
+                    if(ttIcon) {
+                        ttIcon.src = `/img/skills/${runtimeSkillInfo.skillName}.png`;
+                        ttIcon.onerror = function() { this.src = '/img/skills/default.png'; };
+                    }
+                    const ttName = document.getElementById('ttName');
+                    if(ttName) ttName.innerText = runtimeSkillInfo.skillName;
+
+                    let dynamicDesc = runtimeSkillInfo.description;
+                    if (baseSkillInfo.power !== runtimeSkillInfo.power) {
+                        dynamicDesc = dynamicDesc.replace(new RegExp(baseSkillInfo.power, 'g'), `<b>${runtimeSkillInfo.power} (▲강화됨)</b>`);
+                    }
+                    const ttDesc = document.getElementById('ttDesc');
+                    if(ttDesc) ttDesc.innerHTML = dynamicDesc;
+
+                    if(document.getElementById('ttCost')) document.getElementById('ttCost').innerText = runtimeSkillInfo.cost;
+                    if(document.getElementById('ttTier')) document.getElementById('ttTier').innerText = `Lv.${runtimeSkillInfo.level}`;
+
+                    let typeText = '공격 스킬';
+                    if (runtimeSkillInfo.skillCategory === 'GACHA') typeText = '🎲 가챠 스킬';
+                    else if (runtimeSkillInfo.skillCategory.includes('HEAL')) typeText = '💚 치유 스킬';
+                    else if (runtimeSkillInfo.reflect_damage > 0) typeText = '방어 / 반격 스킬';
+                    else if (runtimeSkillInfo.skillCategory.includes('DEF')) typeText = '방어 스킬';
+
+                    if(document.getElementById('ttType')) document.getElementById('ttType').innerText = typeText;
+                    if(document.getElementById('skillTooltip')) document.getElementById('skillTooltip').style.display = 'block';
+                });
+                card.addEventListener('mouseleave', () => { if(document.getElementById('skillTooltip')) document.getElementById('skillTooltip').style.display = 'none'; });
+
+                skillContainer.appendChild(card);
+            });
+        } else {
+
+            skillContainer.innerHTML = `<div style="width:100%; text-align:center; padding-top:50px; color:#ff4d4d; font-weight:bold;">⚠️ ${currentUnit.name}의 행동을 연산 중...</div>`;
+
+            setTimeout(() => {
+                if (isBattleEnded) return;
+
+                const mySkillPool = getEnemySkillPool(currentUnit);
+
+                mySkillPool.forEach((chosenSkill, index) => {
+                    setTimeout(() => {
+                        if (isBattleEnded || currentUnit.hp <= 0) return;
+
+                        const alivePlayers = playerTeamData.filter(p => p.hp > 0);
+                        const aliveEnemies = enemyTeamData.filter(e => e.hp > 0);
+                        if (alivePlayers.length === 0) return;
+
+                        const randomPlayerTarget = alivePlayers[Math.floor(Math.random() * alivePlayers.length)];
+
+                        const damagePerHit = chosenSkill.power || 15;
+                        const hitCount = chosenSkill.hitCount || 1;
+                        const totalDamage = damagePerHit * hitCount;
+
+                        let logMessage = "";
+
+                        if (chosenSkill.skillCategory === 'HEAL_SINGLE') {
+                            let lowestHpUnit = aliveEnemies[0];
+                            let minHpRatio = aliveEnemies[0].hp / aliveEnemies[0].maxHp;
+
+                            aliveEnemies.forEach(enemy => {
+                                const currentRatio = enemy.hp / enemy.maxHp;
+                                if (currentRatio < minHpRatio) {
+                                    minHpRatio = currentRatio;
+                                    lowestHpUnit = enemy;
+                                }
+                            });
+
+                            lowestHpUnit.hp = Math.min(lowestHpUnit.maxHp, lowestHpUnit.hp + damagePerHit);
+                            logMessage = `💚 <span style="color:#ffcc00;">[${currentUnit.name}]</span>이(가) <span style="color:#42f56c;">[${chosenSkill.skillName}]</span>을 써서 체력 비율이 가장 낮은 아군 <span style="color:#ffcc00;">[${lowestHpUnit.name}]</span>을 <span style="color:#42f56c; font-weight:bold;">${damagePerHit}</span>만큼 치료했습니다!`;
+                        }
+
+                        else if (chosenSkill.skillCategory === 'DEF_SINGLE') {
+                            currentUnit.shield = (currentUnit.shield || 0) + damagePerHit;
+                            logMessage = `🛡️ <span style="color:#ffcc00;">[${currentUnit.name}]</span>이(가) <span style="color:#50bcdf;">[${chosenSkill.skillName}]</span>으로 튼튼한 장벽(+${damagePerHit})을 쳤습니다.`;
+                        }
+
+                        else if (chosenSkill.skillCategory === 'ATK_SINGLE' || chosenSkill.skillCategory === 'ATK_MULTI') {
+                            logMessage = `💥 <span style="color:#ffcc00;">[${currentUnit.name}]</span>의 <span style="color:#ff4d4d;">[${chosenSkill.skillName}]</span> 스킬 격돌!`;
+
+                            if (chosenSkill.skillCategory === 'ATK_MULTI') {
+                                for (let h = 0; h < hitCount; h++) {
+                                    playerTeamData.forEach(player => {
+                                        if (player.hp > 0) calculateAndApplyDamage(currentUnit, player, damagePerHit);
+                                    });
+                                }
+                            } else {
+                                for (let h = 0; h < hitCount; h++) {
+                                    if (randomPlayerTarget.hp > 0) calculateAndApplyDamage(currentUnit, randomPlayerTarget, damagePerHit);
+                                }
+                            }
+
+                            if (chosenSkill.statusEffect === 'BURN') {
+                                randomPlayerTarget.burnStacks = (randomPlayerTarget.burnStacks || 0) + 1;
+                            }
+                        }
+
+                        else if (chosenSkill.skillCategory === 'ATK_DEF_SINGLE') {
+                            currentUnit.shield = (currentUnit.shield || 0) + damagePerHit;
+                            if (randomPlayerTarget.hp > 0) calculateAndApplyDamage(currentUnit, randomPlayerTarget, damagePerHit);
+                            logMessage = `💧 <span style="color:#ffcc00;">[${currentUnit.name}]</span>이(가) <span style="color:#00f2ff;">[${chosenSkill.skillName}]</span>을 써서 공격과 동시에 보호막을 채웁니다!`;
+                        }
+
+                        showBattleMessage(logMessage, true);
+                        renderTeam('playerTeam', playerTeamData);
+                        renderTeam('enemyTeam', enemyTeamData);
+                        checkBattleOver();
+
+                    }, index * 900);
+                });
+
+                setTimeout(() => {
+                    if (!isBattleEnded) nextTurn();
+                }, (mySkillPool.length * 900) + 500);
+
+            }, 1000);
+        }
+    }
+
+    function selectSkill(skillInfo, cardDOM) {
+        if (selectedSkillCardDOM === cardDOM) { cancelTargeting(); return; }
+        cancelTargeting();
+
+        selectedSkillInfo = skillInfo;
+        selectedSkillCardDOM = cardDOM;
+        cardDOM.classList.add('selected');
+
+        if (skillInfo.skillCategory === 'GACHA') executeGachaSkill();
+        else if (skillInfo.skillCategory === 'HEAL_MULTI') executeHealMulti();
+        else if (skillInfo.skillCategory === 'DEF_MULTI') executeDefenseMulti();
+        else if (skillInfo.skillCategory === 'HEAL_SINGLE' || skillInfo.skillCategory === 'DEF_SINGLE') {
+            document.querySelectorAll('#playerTeam .pokemon-slot').forEach(s => { if (!s.classList.contains('dead')) s.classList.add('targetable'); });
+        }
+        else {
+            document.querySelectorAll('#enemyTeam .pokemon-slot').forEach(s => { if (!s.classList.contains('dead')) s.classList.add('targetable'); });
+        }
+    }
+
+    function cancelTargeting() {
+        selectedSkillInfo = null; selectedSkillCardDOM = null;
+        document.querySelectorAll('.skill-card').forEach(c => c.classList.remove('selected'));
+        document.querySelectorAll('.pokemon-slot').forEach(s => s.classList.remove('targetable'));
+    }
+
+    function handleUnitTargetClick(targetUnit, containerId) {
+        if (!selectedSkillInfo || targetUnit.hp <= 0) return;
+
+        const currentUnit = turnOrder[currentTurnIndex];
+        currentUnit.currentCost -= selectedSkillInfo.cost;
+        updateCostBarUI(currentUnit.currentCost);
+
+        if (selectedSkillInfo.skillCategory === 'HEAL_SINGLE') {
+            if (containerId !== 'playerTeam') return;
+            const healAmount = selectedSkillInfo.power || 30;
+            targetUnit.hp = Math.min(targetUnit.maxHp, targetUnit.hp + healAmount);
+        }
+        else if (selectedSkillInfo.skillCategory === 'DEF_SINGLE') {
+            if (containerId !== 'playerTeam') return;
+            targetUnit.shield = (targetUnit.shield || 0) + selectedSkillInfo.power;
+            if (selectedSkillInfo.reflectDamage && selectedSkillInfo.reflectDamage > 0) targetUnit.reflectThorns = selectedSkillInfo.reflectDamage;
+        }
+        else if (selectedSkillInfo.skillCategory === 'ATK_DEF_SINGLE') {
+            if (containerId !== 'enemyTeam') return;
+            currentUnit.shield = (currentUnit.shield || 0) + selectedSkillInfo.power;
+            calculateAndApplyDamage(currentUnit, targetUnit, selectedSkillInfo.power || 15);
+        }
+        else {
+            if (containerId !== 'enemyTeam') return;
+            const damagePerHit = selectedSkillInfo.power || 15;
+            const hitCount = selectedSkillInfo.hitCount || 1;
+
+            if (selectedSkillInfo.skillCategory === 'ATK_MULTI') {
+                for (let i = 0; i < hitCount; i++) {
+                    enemyTeamData.forEach(enemy => { if (enemy.hp > 0) calculateAndApplyDamage(currentUnit, enemy, damagePerHit); });
+                }
+            } else {
+                for (let i = 0; i < hitCount; i++) { if (targetUnit.hp > 0) calculateAndApplyDamage(currentUnit, targetUnit, damagePerHit); }
+            }
+
+            if (selectedSkillInfo.statusEffect === 'BURN') targetUnit.burnStacks = (targetUnit.burnStacks || 0) + 1;
+        }
+
+        renderTeam('playerTeam', playerTeamData);
+        renderTeam('enemyTeam', enemyTeamData);
+        finalizeSkillExecution();
+    }
+
+    function executeDefenseMulti() {
+        const currentUnit = turnOrder[currentTurnIndex];
+        currentUnit.currentCost -= selectedSkillInfo.cost;
+        updateCostBarUI(currentUnit.currentCost);
+
+        playerTeamData.forEach(p => {
+            if (p.hp > 0) {
+                p.shield = (p.shield || 0) + selectedSkillInfo.power;
+                if (selectedSkillInfo.reflectDamage && selectedSkillInfo.reflectDamage > 0) p.reflectThorns = selectedSkillInfo.reflectDamage;
+            }
+        });
+        renderTeam('playerTeam', playerTeamData);
+        finalizeSkillExecution();
+    }
+
+    function executeHealMulti() {
+        const currentUnit = turnOrder[currentTurnIndex];
+        currentUnit.currentCost -= selectedSkillInfo.cost;
+        updateCostBarUI(currentUnit.currentCost);
+
+        const healAmount = selectedSkillInfo.power || 25;
+        playerTeamData.forEach(p => { if (p.hp > 0) p.hp = Math.min(p.maxHp, p.hp + healAmount); });
+        renderTeam('playerTeam', playerTeamData);
+        finalizeSkillExecution();
+    }
+
+    function executeGachaSkill() {
+        const currentUnit = turnOrder[currentTurnIndex];
+        currentUnit.currentCost -= selectedSkillInfo.cost;
+        updateCostBarUI(currentUnit.currentCost);
+
+        const skillName = selectedSkillInfo.skillName;
+        let logMessage = "";
+
+        if (skillName === '포춘 오브 더 타이드') {
+            const outcomes = [1, 2, -1, -2];
+            const costChange = outcomes[Math.floor(Math.random() * outcomes.length)];
+            currentUnit.currentCost = Math.max(0, Math.min(MAX_COST, currentUnit.currentCost + costChange));
+            logMessage = costChange > 0 ? `🌊 가챠 대성공! 코스트 +${costChange}` : `🌊 낙방.. 코스트 ${costChange}`;
+        }
+        else if (skillName === '섭리의 룰렛') {
+            const outcomes = [10, 15, 20, -10, -20];
+            const hpChange = outcomes[Math.floor(Math.random() * outcomes.length)];
+            if (hpChange > 0) {
+                currentUnit.hp = Math.min(currentUnit.maxHp, currentUnit.hp + hpChange);
+                logMessage = `🎡 룰렛 힐 성공! HP +${hpChange}`;
+            } else {
+                currentUnit.hp = Math.max(0, currentUnit.hp + hpChange);
+                logMessage = `💀 룰렛 자해 발생! HP ${hpChange}`;
+            }
+        }
+        else if (skillName === '카오틱 볼트 룰렛') {
+            if (Math.floor(Math.random() * 2) === 0) {
+                turnOrder.splice(currentTurnIndex + 1, 0, currentUnit);
+                logMessage = `🔥 대박! 추가 턴을 한번 더 획득합니다!`;
+            } else {
+                currentUnit.skipNextTurn = true;
+                logMessage = `💨 실패.. 다음 번 차례가 강제 스킵됩니다.`;
+            }
+        }
+
+        alert(logMessage);
+        renderTeam('playerTeam', playerTeamData);
+        renderTeam('enemyTeam', enemyTeamData);
+        finalizeSkillExecution();
+    }
+
+    function finalizeSkillExecution() {
+        if(selectedSkillCardDOM) {
+            selectedSkillCardDOM.style.opacity = "0.2";
+            selectedSkillCardDOM.style.pointerEvents = "none";
+        }
+        cancelTargeting();
+        checkBattleOver();
+        refreshCardAvailability();
+    }
+
+    function calculateAndApplyDamage(attacker, defender, incomingDamage) {
+        let finalDamageTaken = incomingDamage;
+        if (defender.shield && defender.shield > 0) {
+            if (defender.shield >= incomingDamage) { defender.shield -= incomingDamage; finalDamageTaken = 0; }
+            else { finalDamageTaken = incomingDamage - defender.shield; defender.shield = 0; }
+        }
+        if (finalDamageTaken > 0) defender.hp -= finalDamageTaken;
+        if (defender.reflectThorns && defender.reflectThorns > 0 && defender.isPlayer !== attacker.isPlayer) {
+            attacker.hp -= defender.reflectThorns;
+        }
+    }
+
+    function refreshCardAvailability() {
+        const currentUnit = turnOrder[currentTurnIndex];
+        if(!currentUnit) return;
+        document.querySelectorAll('.skill-container .skill-card').forEach(card => {
+            if(card.style.pointerEvents !== "none") {
+                const badge = card.querySelector('.skill-cost-badge');
+                if (badge) {
+                    const cost = parseInt(badge.innerText.replace('C ', ''));
+                    if(currentUnit.currentCost < cost) card.classList.add('disabled');
+                }
+            }
+        });
+    }
+
+    function getRandomGoldValue(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function checkBattleOver() {
+        if (isBattleEnded) return;
+        const isVictory = enemyTeamData.every(e => e.hp <= 0);
+        const isDefeat = playerTeamData.every(p => p.hp <= 0);
+
+        if (isVictory || isDefeat) {
+            isBattleEnded = true;
+
+            const currentHps = {};
+            playerTeamData.forEach(p => { currentHps[p.id] = Math.max(0, p.hp); });
+            localStorage.setItem('playerBattleHps', JSON.stringify(currentHps));
+
+            let earnedGold = 0;
+
+            if (isVictory) {
+                const clearedNodeId = localStorage.getItem('currentBattleNodeId') || 'n2';
+                localStorage.setItem('currentLocation', clearedNodeId);
+
+                let currentWalletGold = parseInt(localStorage.getItem('userGold'));
+                if (isNaN(currentWalletGold)) currentWalletGold = 300;
+
+                if (CURRENT_BATTLE_TYPE === 'BOSS') earnedGold = 150;
+                else if (CURRENT_BATTLE_TYPE === 'CURSED') earnedGold = getRandomGoldValue(50, 75);
+                else earnedGold = getRandomGoldValue(30, 50);
+
+                currentWalletGold += earnedGold;
+                localStorage.setItem('userGold', currentWalletGold);
+
+                const slotId = localStorage.getItem('currentSlotId');
+                if (slotId) {
+                    fetch('/api/slots/update', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ slotId: parseInt(slotId), lastNode: clearedNodeId })
+                    })
+                    .then(res => console.log("서버 세이브 동기화 완료!"))
+                    .catch(err => console.error("서버 저장 실패, 로컬 캐시 유지", err));
+                }
+
+                nextLocationUrl = '/game/adventure';
+
+            } else {
+                localStorage.setItem('currentLocation', 'n1');
+                nextLocationUrl = '/game/adventure';
+            }
+
+            const modal = document.getElementById('resultModal');
+            const title = document.getElementById('modalTitle');
+            const rewardGoldEl = document.getElementById('rewardGold');
+
+            if (modal && title) {
+                if (isVictory) {
+                    title.innerText = "VICTORY";
+                    title.className = "result-title victory";
+                    if (rewardGoldEl) rewardGoldEl.innerText = `+ ${earnedGold} G`;
+                } else {
+                    title.innerText = "DEFEAT";
+                    title.className = "result-title defeat";
+                    if (rewardGoldEl) rewardGoldEl.innerText = "+ 0 G";
+                }
+
+                localStorage.removeItem('currentBattleNodeType');
+                modal.style.display = "flex";
+            }
+        }
+    }
+
+    function handleModalAction() {
+        location.href = nextLocationUrl;
+    }
+
+    function showBattleMessage(text, isEnemy = true) {
+        const msgBox = document.getElementById('battleActionMessage');
+        if (!msgBox) return;
+
+        msgBox.innerHTML = text;
+        if (isEnemy) {
+            msgBox.style.borderColor = "#ff4d4d";
+            msgBox.style.boxShadow = "0 0 10px rgba(255, 77, 77, 0.5)";
+        } else {
+            msgBox.style.borderColor = "#00f2ff";
+            msgBox.style.boxShadow = "0 0 10px rgba(0, 242, 255, 0.5)";
+        }
+        msgBox.classList.add('show');
+        setTimeout(() => { msgBox.classList.remove('show'); }, 2000);
+    }
+
+    function getEnemySkillPool(currentEnemy) {
+        if (!globalSkillRegistry || globalSkillRegistry.length === 0) {
+            return [{ skillName: '몸통박치기', power: 25, type: 'NORMAL', skillCategory: 'ATK_SINGLE' }];
+        }
+        if (!currentEnemy || !currentEnemy.skills || currentEnemy.skills.length === 0) {
+            return [globalSkillRegistry[0]];
+        }
+        const matchedPool = globalSkillRegistry.filter(skill => currentEnemy.skills.includes(skill.skillName));
+        return matchedPool.length > 0 ? matchedPool : [globalSkillRegistry[0]];
+    }
+
+    function nextTurn() { if (!isBattleEnded) { currentTurnIndex = (currentTurnIndex + 1) % turnOrder.length; startTurn(); } }
+    window.onload = initBattle;
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+{
+  "블레이즈 메테오": [
+    {"level": 1, "gold": 75, "powerup": 1},
+    {"level": 2, "gold": 110, "powerup": 2}
+  ],
+  "파이어 서클 슬래시": [
+    {"level": 1, "gold": 100, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 2}
+  ],
+  "볼케닉 이럽션": [
+    {"level": 1, "gold": 100, "powerup": 2},
+    {"level": 2, "gold": 125, "powerup": 2}
+  ],
+  "블레이징 펜리르": [
+    {"level": 1, "gold": 180, "powerup": 1},
+    {"level": 2, "gold": 200, "powerup": 1.5}
+  ],
+  "벌컨 슬라이서": [
+    {"level": 1, "gold": 155, "powerup": 2},
+    {"level": 2, "gold": 195, "powerup": 2}
+  ],
+  "볼카닉 헬 파이어 펀치": [
+    {"level": 1, "gold": 100, "powerup": 2},
+    {"level": 2, "gold": 125, "powerup": 2}
+  ],
+  "룬 브레이커 랜스": [
+    {"level": 1, "gold": 155, "powerup": 1},
+    {"level": 2, "gold": 195, "powerup": 1.5}
+  ],
+  "카이저 블래스트 브레스": [
+    {"level": 1, "gold": 180, "powerup": 2},
+    {"level": 2, "gold": 200, "powerup": 2}
+  ],
+  "옵시디언 앰버 가드": [
+    {"level": 1, "gold": 125, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 1}
+  ],
+  "피닉스 엠버 리버스": [
+    {"level": 1, "gold": 130, "powerup": 1},
+    {"level": 2, "gold": 160, "powerup": 1}
+  ],
+  "아쿠아 볼트 프린트": [
+    {"level": 1, "gold": 80, "powerup": 1},
+    {"level": 2, "gold": 110, "powerup": 1}
+  ],
+  "타이달 룬 인포서": [
+    {"level": 1, "gold": 115, "powerup": 0.5},
+    {"level": 2, "gold": 140, "powerup": 1}
+  ],
+  "하이드로 이니그마": [
+    {"level": 1, "gold": 110, "powerup": 1},
+    {"level": 2, "gold": 140, "powerup": 2}
+  ],
+  "아쿠아리스 쉐어": [
+    {"level": 1, "gold": 130, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 2}
+  ],
+  "타이탈 가드": [
+    {"level": 1, "gold": 75, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 1}
+  ],
+  "미러링 타이달 쏜": [
+    {"level": 1, "gold": 100, "powerup": 1},
+    {"level": 2, "gold": 130, "powerup": 1}
+  ],
+  "에테리얼 하이드로 코어": [
+    {"level": 1, "gold": 120, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 2}
+  ],
+  "스피닝 글래시어 노드": [
+    {"level": 1, "gold": 135, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 2}
+  ],
+  "사이렌스 베네딕션": [
+    {"level": 1, "gold": 80, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 1}
+  ],
+  "오션스 알트루이즘": [
+    {"level": 1, "gold": 120, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 2}
+  ],
+  "포춘 오브 더 타이드": [
+    {"level": 1, "gold": 200,
+    "rates":  {"p1": 27.5, "p2": 27.5, "r1": 22.5, "r2": 22.5}},
+    {"level": 2, "gold": 300,
+    "rates": {"p1": 30, "p2": 30, "r1": 20, "r2": 20}}
+  ],
+  "쏜즈 트위스트 피어스": [
+    {"level": 1, "gold": 70, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 1}
+  ],
+  "리프 스톰 엣지": [
+    {"level": 1, "gold": 100, "powerup": 0.5},
+    {"level": 2, "gold": 130, "powerup": 1}
+  ],
+  "실반 레이저 퍼지": [
+    {"level": 1, "gold": 110, "powerup": 1},
+    {"level": 2, "gold": 135, "powerup": 2}
+  ],
+  "테라 랜스": [
+    {"level": 1, "gold": 130, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 2}
+  ],
+  "대지의 폭발": [
+    {"level": 1, "gold": 135, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 1}
+  ],
+  "루트 셸터": [
+    {"level": 1, "gold": 60, "powerup": 1},
+    {"level": 2, "gold": 85, "powerup": 1}
+  ],
+  "공명의 장벽": [
+    {"level": 1, "gold": 120, "powerup": 1},
+    {"level": 2, "gold": 150, "powerup": 1}
+  ],
+  "스피릿 아머": [
+    {"level": 1, "gold": 90, "powerup": 1},
+    {"level": 2, "gold": 135, "powerup": 2}
+  ],
+  "생명의 싹": [
+    {"level": 1, "gold": 70, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 2}
+  ],
+  "섭리의 룰렛": [
+    {"level": 1, "gold": 200,
+      "rates":  {"p1": 22, "p2": 21, "p3": 21, "r1": 18, "r2": 18}},
+    {"level": 2, "gold": 300,
+      "rates": {"p1": 23, "p2": 22, "p3": 21, "r1": 17, "r2": 17}}
+  ],
+  "낙뢰": [
+    {"level": 1, "gold": 70, "powerup": 1},
+    {"level": 2, "gold": 95, "powerup": 1}
+  ],
+  "전계": [
+    {"level": 1, "gold": 85, "powerup": 0.5},
+    {"level": 2, "gold": 100, "powerup": 0.5}
+  ],
+  "연쇄": [
+    {"level": 1, "gold": 95, "powerup": 1},
+    {"level": 2, "gold": 120, "powerup": 1}
+  ],
+  "플라즈마 클로": [
+    {"level": 1, "gold": 100, "powerup": 1},
+    {"level": 2, "gold": 140, "powerup": 2}
+  ],
+  "아크 코어": [
+    {"level": 1, "gold": 135, "powerup": 1},
+    {"level": 2, "gold": 180, "powerup": 2}
+  ],
+  "디바스테이터": [
+    {"level": 1, "gold": 180, "powerup": 1},
+    {"level": 2, "gold": 225, "powerup": 1}
+  ],
+  "이온 퀘이사": [
+    {"level": 1, "gold": 135, "powerup": 1},
+    {"level": 2, "gold": 180, "powerup": 2}
+  ],
+  "플라즈마 베일": [
+    {"level": 1, "gold": 75, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 2}
+  ],
+  "스태틱 리액티브 돔": [
+    {"level": 1, "gold": 75, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 1}
+  ],
+  "라이트닝 리바이탈": [
+    {"level": 1, "gold": 75, "powerup": 1},
+    {"level": 2, "gold": 100, "powerup": 1}
+  ],
+  "카오틱 볼트 룰렛": [
+    {"level": 1, "gold": 200,
+      "rates":  {"p1": 53.5, "r1": 46.5}},
+    {"level": 2, "gold": 300,
+      "rates": {"p1": 55, "r1": 45}}
+  ]
+}

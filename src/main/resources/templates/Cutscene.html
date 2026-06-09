@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>The Awakening - Cutscene</title>
+    <style>
+        body { margin: 0; background-color: #000; color: white; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; }
+
+        #cutscene-container {
+            width: 100vw; height: 100vh;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        #visual-area {
+            width: 80%; height: 55%;
+            border: 4px solid #ffcc00;
+            border-radius: 20px;
+            background-size: cover; background-position: center;
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden; position: relative;
+        }
+
+        #dialogue-box {
+            width: 75%; height: 140px;
+            margin-top: 40px;
+            background: rgba(15, 15, 15, 0.9);
+            border: 3px solid #ffcc00;
+            border-radius: 70px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0 50px; text-align: center;
+            font-size: 1.4rem; line-height: 1.6;
+            cursor: pointer;
+            user-select: none; /* 잦은 클릭으로 인한 텍스트 드래그 하이라이트 방지 */
+        }
+
+        #skip-btn {
+            position: absolute; bottom: 30px; right: 40px;
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: rgba(50, 50, 50, 0.8);
+            border: 2px solid #ffcc00;
+            color: #ffcc00;
+            font-weight: bold; cursor: pointer;
+            transition: 0.3s;
+        }
+        #skip-btn:hover { background: #ffcc00; color: #000; }
+
+        .highlight { color: #ffcc00; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div id="cutscene-container">
+    <div id="visual-area"></div>
+    <div id="dialogue-box" onclick="handleDialogueClick()">
+        <span id="text-content"></span>
+    </div>
+    <button id="skip-btn" onclick="goToLobby()">SKIP</button>
+</div>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const playerName = urlParams.get('name') || '여행자';
+
+    const storyData = [
+        {
+            img: "/img/컷신배경.png",
+            text: "(치직... 치직...) 현재 관측 사상 최대치의 전자기 폭풍이 발생 중입니다!"
+        },
+        {
+            img: "/img/skills/이지스 오브 인드라.png",
+            text: `보십시오! <span class="highlight">${playerName}</span>, 자네를 감싼 저 문양은 고대 뇌신의 성벽이라네.`
+        },
+        {
+            img: "/img/오박사.png",
+            text: "허허, 자네는 방금 20번째 오의(奧義) <span class='highlight'>[이지스 오브 인드라]</span>를 깨우셨군! 정말 대단해!"
+        },
+        {
+            img: "/img/오박사.png",
+            text: "자, 이제 이 힘을 가지고 폭주하는 포켓몬들의 비밀을 파헤치러 떠나보게나!"
+        }
+    ];
+
+    let currentStep = 0;
+    let isTyping = false;       // 💡 현재 타이핑 효과가 연출 중인지 체크하는 플래그
+    let typingTimer = null;     // 💡 실행 중인 setTimeout을 제어할 타이머 참조 변수
+    let currentFullText = "";   // 💡 현재 출력해야 할 전체 텍스트 백업본
+
+    const textEl = document.getElementById('text-content');
+    const visualEl = document.getElementById('visual-area');
+
+    // 💡 대사창 클릭 시 흐름을 제어하는 핵심 핸들러 함수
+    function handleDialogueClick() {
+        if (isTyping) {
+            // 1. 글자가 아직 나오고 있는 도중이라면 -> 타이핑을 즉시 강제 종료하고 전체 글자 노출!
+            clearTimeout(typingTimer);
+            textEl.innerHTML = currentFullText;
+            isTyping = false;
+        } else {
+            // 2. 타이핑이 완벽히 끝나 있는 상태라면 -> 다음 씬으로 안전하게 이동!
+            nextScene();
+        }
+    }
+
+    function nextScene() {
+        if (currentStep < storyData.length) {
+            visualEl.style.backgroundImage = `url('${storyData[currentStep].img}')`;
+            visualEl.style.backgroundSize = "cover";
+            visualEl.style.backgroundPosition = "center";
+            visualEl.style.backgroundRepeat = "no-repeat";
+
+            if(storyData[currentStep].img.includes("오박사") || storyData[currentStep].img.includes("인드라")) {
+                visualEl.style.backgroundSize = "contain";
+            }
+
+            // 이번 스텝의 타겟 문장을 세팅하고 타이핑 시작
+            currentFullText = storyData[currentStep].text;
+            typeWriter(currentFullText);
+            currentStep++;
+        } else {
+            goToLobby();
+        }
+    }
+
+    function typeWriter(text) {
+        // 혹시 남아있을지 모를 비정상 타이머를 한 번 더 제거하여 병목 원천 차단
+        if (typingTimer) clearTimeout(typingTimer);
+
+        isTyping = true;
+        let i = 0;
+        textEl.innerHTML = "";
+
+        function type() {
+            if (!isTyping) return; // 중간에 스킵 클릭(isTyping = false)이 일어났다면 타이핑 루프 종료
+
+            if (i < text.length) {
+                if (text.charAt(i) === '<') {
+                    const tagEnd = text.indexOf('>', i);
+                    textEl.innerHTML += text.substring(i, tagEnd + 1);
+                    i = tagEnd + 1;
+                } else {
+                    textEl.innerHTML += text.charAt(i);
+                    i++;
+                }
+                typingTimer = setTimeout(type, 40);
+            } else {
+                // 글자 출력이 정상적으로 끝까지 도달 완료한 시점
+                isTyping = false;
+            }
+        }
+        type();
+    }
+
+    function goToLobby() {
+        location.href = '/game/lobby';
+    }
+
+    window.onload = nextScene;
+</script>
+</body>
+</html>

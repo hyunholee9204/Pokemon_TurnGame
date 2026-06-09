@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>스킬 도감</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .type-filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .type-btn {
+            width: 80px; height: 80px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-weight: bold; font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center;
+            color: white; text-shadow: 1px 1px 2px black;
+        }
+
+        .type-btn:hover { transform: scale(1.1); }
+
+        .btn-fire { background-color: #FF4422; box-shadow: 0 0 15px #FF4422; }
+        .btn-water { background-color: #3399FF; box-shadow: 0 0 15px #3399FF; }
+        .btn-grass { background-color: #77CC55; box-shadow: 0 0 15px #77CC55; }
+        .btn-electric { background-color: #FFCC33; box-shadow: 0 0 15px #FFCC33; }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .skill-card {
+            background: #252525;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 475px;
+            gap: 8px;
+            box-sizing: border-box;
+        }
+
+        .skill-card:hover {
+            background: #353535;
+            border-color: #ffcc00;
+            transform: translateY(-5px);
+        }
+
+        .skill-card img {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            margin: 0 auto 15px;
+        }
+
+        .s-type {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            margin-bottom: 10px;
+            background: #444;
+        }
+
+        .s-desc {
+            font-size: 15px;
+            color: #ccc;
+            line-height: 1.5;
+            flex-grow: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            background: #1e1e1e;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            overflow-y: auto;
+            word-break: break-all;
+        }
+
+        .s-desc::-webkit-scrollbar { width: 4px; }
+        .s-desc::-webkit-scrollbar-thumb { background: #444; border-radius: 2px; }
+
+       .s-name {
+           font-size: 18px;
+           font-weight: bold;
+           color: #ffcc00;
+           margin-bottom: 10px;
+           height: 45px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           line-height: 1.2;
+           word-break: keep-all;
+       }
+
+        .skill-stats {
+            display: flex;
+            justify-content: space-around;
+            background: #1a1a1a;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item { font-size: 14px; }
+        .stat-label { color: #888; display: block; font-size: 11px; }
+
+        .home-btn {
+            position: fixed; top: 20px; right: 20px;
+            padding: 10px 20px; background-color: #444; color: white;
+            text-decoration: none; border-radius: 5px; font-size: 14px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+<a href="/homeMenu" class="home-btn">🏠 Home</a>
+<h1 style="text-align: center">SKILL PEDIA</h1>
+
+<div class="type-filter-container">
+    <button class="type-btn btn-fire" onclick="filterType('불꽃')">불</button>
+    <button class="type-btn btn-water" onclick="filterType('물')">물</button>
+    <button class="type-btn btn-grass" onclick="filterType('풀')">풀</button>
+    <button class="type-btn btn-electric" onclick="filterType('전기')">전기</button>
+</div>
+<div class="skill-grid" id="skillGrid">
+    <div class="skill-card" th:each="skill : ${skillList}" th:attr="data-type=${skill.type}">
+        <div class="id-no" th:text="'No.' + ${skill.skillId}"></div>
+
+        <div class="skill-img-container" style="height: 120px; display: flex; align-items: center; justify-content: center; margin: 10px 0;">
+            <img th:src="@{'/img/skills/' + ${skill.imgPath}}" alt="skill"
+                 style="width: 100px; height: 100px; object-fit: contain;">
+        </div>
+
+        <div class="s-name" th:text="${skill.skillName}" style="font-size: 18px; font-weight: bold; margin-bottom: 5px;"></div>
+
+        <div style="font-size: 12px; color: #aaa; margin-bottom: 10px;" th:text="${skill.type}"></div>
+
+        <div class="skill-stats" style="background: #1a1a1a; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+            <div class="stat-item" th:if="${skill.skillCategory == 'ATTACK'}">
+                <span class="stat-label" style="font-size: 10px; color: #888; display: block;">ATK POWER</span>
+                <strong style="color: #ff4422; font-size: 18px;" th:text="${skill.power}">90</strong>
+            </div>
+            <div class="stat-item" th:if="${skill.skillCategory == 'HEAL'}">
+                <span class="stat-label" style="font-size: 10px; color: #888; display: block;">HEAL AMOUNT</span>
+                <strong style="color: #44ff22; font-size: 18px;" th:text="${skill.power}">50</strong>
+            </div>
+            <div class="stat-item" th:if="${skill.skillCategory != 'ATTACK' && skill.skillCategory != 'HEAL'}">
+                <span class="stat-label" style="font-size: 10px; color: #888; display: block;" th:text="${skill.skillCategory}">CATEGORY</span>
+                <strong style="color: #ffcc33; font-size: 18px;" th:text="${skill.power}">-</strong>
+            </div>
+        </div>
+
+        <div class="s-desc" th:utext="${skill.description}" style="font-size: 15px; color: #ccc; line-height: 1.4;"></div>
+    </div>
+</div>
+<script>
+    function filterType(type) {
+        const cards = document.querySelectorAll('.skill-card');
+        cards.forEach(card => {
+            if (card.getAttribute('data-type') === type) {
+                card.style.display = 'flex'; /* 블록 레이아웃이 깨지지 않도록 원래 구조(flex) 유지 */
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

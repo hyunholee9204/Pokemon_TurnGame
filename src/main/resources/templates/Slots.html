@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TurnGame of Pokemon - Save Slots</title>
+    <style>
+        body { margin: 0; padding: 0; background-color: #000000; color: #ffffff; font-family: 'Malgun Gothic', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+        .container { width: 850px; padding: 40px; border: 4px solid #ffcc00; border-radius: 30px; background-color: rgba(10, 10, 10, 0.95); box-shadow: 0 0 25px #ffcc00; text-align: center; }
+        h1 { color: #ffcc00; font-size: 3rem; margin-bottom: 40px; text-shadow: 2px 2px 10px rgba(255, 204, 0, 0.5); }
+        .slot-list { display: flex; flex-direction: column; gap: 20px; margin-bottom: 30px; }
+        .slot { background: #222; border: 2px solid #444; border-radius: 15px; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden; }
+        .slot:hover { border-color: #ffcc00; background: #333; transform: scale(1.02); box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); }
+        .slot.active { border-color: #ffcc00; }
+        .slot.empty { border: 2px dashed #555; justify-content: center; color: #888; }
+        .slot.empty:hover { border-style: solid; color: #ffcc00; }
+        .slot-info { text-align: left; display: flex; flex-direction: column; gap: 4px; }
+        .slot-name { font-size: 1.5rem; font-weight: bold; color: #ffcc00; display: block; }
+        .slot-date { font-size: 0.85rem; color: #aaa; margin-top: 2px; }
+
+        /* 🎯 [디자인] 스테이지 단계 레이블 스펙 */
+        .slot-stage-badge { display: inline-block; background: #ff3366; color: white; padding: 2px 8px; font-size: 0.8rem; font-weight: bold; border-radius: 4px; margin-bottom: 3px; width: fit-content; }
+        /* 🎯 [디자인] 진행 노드 텍스트 레이아웃 */
+        .slot-progress { font-size: 1rem; color: #00ffcc; font-weight: bold; display: block; text-shadow: 0 0 5px rgba(0,255,204,0.3); }
+
+        .slot-meta { font-size: 1.2rem; font-weight: bold; text-align: right; }
+
+        .slot-list.delete-mode-active .slot.active {
+            border-color: #ff3333 !important;
+        }
+        .slot-list.delete-mode-active .slot.active:hover {
+            background: #4a1a1a !important;
+            box-shadow: 0 0 15px rgba(255, 51, 51, 0.6) !important;
+        }
+
+        #namingModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: #1a1a1a; border: 3px solid #ffcc00; padding: 40px; border-radius: 20px; width: 400px; text-align: center; box-shadow: 0 0 30px #ffcc00; }
+        .modal-content h3 { color: #ffcc00; margin-top: 0; }
+        .modal-content input { width: 100%; padding: 12px; margin: 20px 0; background: #000; border: 1px solid #ffcc00; color: #fff; border-radius: 5px; font-size: 1rem; box-sizing: border-box; }
+
+        .bottom-action-area { display: flex; justify-content: center; gap: 20px; }
+        .btn { padding: 10px 25px; font-size: 1rem; font-weight: bold; border-radius: 8px; cursor: pointer; border: none; transition: 0.2s; }
+        .btn-save { background: #ffcc00; color: #000; }
+        .btn-cancel { background: #444; color: #fff; }
+
+        .btn-delete-mode { background: #441111; color: #ff8888; border: 1px solid #ff3333; }
+        .btn-delete-mode.active { background: #ff3333; color: #ffffff; box-shadow: 0 0 15px #ff3333; }
+
+        .btn:hover { opacity: 0.8; transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>SAVE SLOTS</h1>
+
+    <div class="slot-list" id="slotListContainer">
+        <div th:each="slot : ${slots}"
+             th:class="${slot.active} ? 'slot active' : 'slot empty'"
+             th:attr="data-id=${slot.slotId},
+                      data-name=${slot.saveName},
+                      data-node=${slot.active and slot.lastNode != null ? slot.lastNode : 'n1'}"
+             th:onclick="'handleSlotClick(this)'">
+
+            <th:block th:if="${slot.active}">
+                <div class="slot-info">
+                    <span class="slot-name" th:text="${slot.saveName}">이름</span>
+
+                    <div class="slot-stage-badge">
+                        <th:block th:switch="${slot.lastNode}">
+                            <span th:case="'n1'">STAGE 1 - 대기실</span>
+                            <span th:case="'n2'">STAGE 1 - 1층</span>
+                            <span th:case="'n3'">STAGE 1 - 1층</span>
+                            <span th:case="'n4'">STAGE 1 - 1층</span>
+                            <span th:case="'n5'">STAGE 1 - 2층</span>
+                            <span th:case="'n6'">STAGE 1 - 2층</span>
+                            <span th:case="'n7'">STAGE 1 - 2층</span>
+                            <span th:case="'n8'">STAGE 1 - 2층</span>
+                            <span th:case="'n9'">STAGE 1 - 2층</span>
+                            <span th:case="'n10'">STAGE 1 - 3층</span>
+                            <span th:case="'n11'">STAGE 1 - 3층</span>
+                            <span th:case="'n12'">STAGE 1 - 3층</span>
+                            <span th:case="'n13'">STAGE 1 - 4층</span>
+                            <span th:case="'n14'">STAGE 1 - 4층</span>
+                            <span th:case="'n15'">STAGE 1 - 4층</span>
+                            <span th:case="'n16'">STAGE 1 - 5층</span>
+                            <span th:case="'n17'">STAGE 1 - 5층</span>
+                            <span th:case="'n18'">STAGE 1 - 6층</span>
+                            <span th:case="'n19'">STAGE 1 - 6층</span>
+                            <span th:case="'n20'">STAGE 1 - 중간보스층</span>
+                            <span th:case="'n21'">STAGE 1 - 8층</span>
+                            <span th:case="'n22'">STAGE 1 - 8층</span>
+                            <span th:case="'n23'">STAGE 1 - 8층</span>
+                            <span th:case="'n24'">STAGE 1 - 9층</span>
+                            <span th:case="'n25'">STAGE 1 - 9층</span>
+                            <span th:case="'n26'">STAGE 1 - 정비 구역</span>
+                            <span th:case="'n27'">STAGE 1 - 11층</span>
+                            <span th:case="'n28'">STAGE 1 - 11층</span>
+                            <span th:case="'n29'">STAGE 1 - 11층</span>
+                            <span th:case="'boss'">STAGE 1 - 최정상</span>
+                            <span th:case="*">STAGE 1</span>
+                        </th:block>
+                    </div>
+
+                    <span class="slot-progress">
+                        📍 위치:
+                        <th:block th:switch="${slot.lastNode}">
+                            <span th:case="'n1'">🏠 태초의 마을</span>
+                            <span th:case="'n2'">⚔️ 일반 전투 (상단)</span>
+                            <span th:case="'n3'">⚔️ 일반 전투 (중단)</span>
+                            <span th:case="'n4'">⚔️ 일반 전투 (하단)</span>
+                            <span th:case="'n5'">⚔️ 일반 전투 (상단)</span>
+                            <span th:case="'n6'">💀 저주의 땅 (상층)</span>
+                            <span th:case="'n7'">⚔️ 일반 전투 (중단)</span>
+                            <span th:case="'n8'">💀 저주의 땅 (하층)</span>
+                            <span th:case="'n9'">⚔️ 일반 전투 (하단)</span>
+                            <span th:case="'n10'">💍 유물 상점</span>
+                            <span th:case="'n11'">✨ 스킬 강화소</span>
+                            <span th:case="'n12'">💤 캠프파이어 휴식</span>
+                            <span th:case="'n13'">⚔️ 일반 전투 (상단)</span>
+                            <span th:case="'n14'">💀 저주의 땅 (중단)</span>
+                            <span th:case="'n15'">⚔️ 일반 전투 (하단)</span>
+                            <span th:case="'n16'">⚔️ 일반 전투 (상단)</span>
+                            <span th:case="'n17'">⚔️ 일반 전투 (하단)</span>
+                            <span th:case="'n18'">💤 캠프파이어 휴식</span>
+                            <span th:case="'n19'">✨ 스킬 강화소</span>
+                            <span th:case="'n20'">💀 고독한 저주의 땅</span>
+                            <span th:case="'n21'">⚔️ 일반 전투 (상단)</span>
+                            <span th:case="'n22'">💀 저주의 땅 (중단)</span>
+                            <span th:case="'n23'">⚔️ 일반 전투 (하단)</span>
+                            <span th:case="'n24'">⚔️ 일반 전투 (상단)</span>
+                            <span th:case="'n25'">⚔️ 일반 전투 (하단)</span>
+                            <span th:case="'n26'">💤 캠프파이어 휴식</span>
+                            <span th:case="'n27'">⚔️ 보스 전초전 (상단)</span>
+                            <span th:case="'n28'">⚔️ 보스 전초전 (중단)</span>
+                            <span th:case="'n29'">⚔️ 보스 전초전 (하단)</span>
+                            <span th:case="'boss'">👹 최종 보스 룸</span>
+                            <span th:case="*">🗺️ 미지의 구역 ([[${slot.lastNode}]])</span>
+                        </th:block>
+                    </span>
+
+                    <span class="slot-date" th:text="|최근 플레이: ${#temporals.format(slot.lastPlayed, 'yyyy-MM-dd HH:mm')}|">시간</span>
+                </div>
+                <div class="slot-meta" th:text="|LV. ${slot.playerLevel}|">LV. 1</div>
+            </th:block>
+
+            <th:block th:if="${!slot.active}">
+                <span>+ 새로운 모험 생성 (슬롯 <span th:text="${slot.slotId}"></span>)</span>
+            </th:block>
+        </div>
+    </div>
+
+    <div class="bottom-action-area">
+        <button class="btn btn-cancel" th:onclick="|location.href='@{/homeMenu}'|">뒤로 가기</button>
+        <button class="btn btn-delete-mode" id="deleteModeBtn" onclick="toggleDeleteMode()">슬롯 삭제 모드: OFF</button>
+    </div>
+</div>
+
+<div id="namingModal">
+    <div class="modal-content">
+        <h3>새로운 모험의 이름</h3>
+        <input type="text" id="saveNameInput" placeholder="이름을 입력하세요 (최대 10자)" maxlength="10">
+        <div class="modal-btns">
+            <button class="btn btn-save" onclick="saveAndStart()">저장 및 시작</button>
+            <button class="btn btn-cancel" onclick="closeModal()">취소</button>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    let currentSlot = null;
+    let isDeleteMode = false;
+
+    function toggleDeleteMode() {
+        isDeleteMode = !isDeleteMode;
+        const btn = document.getElementById('deleteModeBtn');
+        const container = document.getElementById('slotListContainer');
+
+        if (isDeleteMode) {
+            btn.classList.add('active');
+            btn.innerText = "슬롯 삭제 모드: ON 🔥";
+            container.classList.add('delete-mode-active');
+        } else {
+            btn.classList.remove('active');
+            btn.innerText = "슬롯 삭제 모드: OFF";
+            container.classList.remove('delete-mode-active');
+        }
+    }
+
+    function handleSlotClick(element) {
+        const slotId = element.getAttribute('data-id');
+        const isActive = element.classList.contains('active');
+
+        if (isDeleteMode) {
+            if (!isActive) {
+                alert("비어 있는 슬롯은 삭제할 수 없습니다.");
+                return;
+            }
+
+            const saveName = element.getAttribute('data-name');
+            if (confirm(`⚠️ [경고]정말로 '${saveName}' (슬롯 ${slotId}) 세이브 데이터를 완전히 삭제하시겠습니까?`)) {
+                executeDeleteSlot(slotId);
+            }
+            return;
+        }
+
+        if (isActive) {
+            loadGame(element);
+        } else {
+            openNamingModal(slotId);
+        }
+    }
+
+    function executeDeleteSlot(slotId) {
+        fetch(`/api/slots/delete/${slotId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        })
+        .then(response => {
+            if (response.ok) {
+                localStorage.removeItem('playerBattleHps');
+                localStorage.removeItem('currentLocation');
+
+                alert("세이브 슬롯이 성공적으로 공장 초기화되었습니다!");
+                location.reload();
+            } else {
+                alert("슬롯 삭제 연산에 실패했습니다. (서버 내부 에러)");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("서버와 통신하는 중 오류가 발생했습니다.");
+        });
+    }
+
+    function loadGame(element) {
+        const slotId = element.getAttribute('data-id');
+        const lastNode = element.getAttribute('data-node');
+
+        localStorage.setItem('currentSlotId', slotId);
+        localStorage.setItem('currentLocation', lastNode);
+
+        if (lastNode && lastNode !== 'n1') {
+            location.href = '/game/map';
+        } else {
+            const name = element.getAttribute('data-name');
+            location.href = '/game/cutscene?name=' + encodeURIComponent(name) + '&slotId=' + slotId;
+        }
+    }
+
+    function openNamingModal(slotId) {
+        if (isDeleteMode) return;
+
+        currentSlot = slotId;
+        document.getElementById('namingModal').style.display = 'flex';
+        document.getElementById('saveNameInput').focus();
+    }
+
+    function closeModal() {
+        document.getElementById('namingModal').style.display = 'none';
+        document.getElementById('saveNameInput').value = '';
+    }
+
+    function saveAndStart() {
+        const name = document.getElementById('saveNameInput').value.trim();
+        if (!name) {
+            alert("이름을 입력해주세요!");
+            return;
+        }
+
+        const requestData = {
+            slotId: currentSlot,
+            saveName: name
+        };
+
+        localStorage.removeItem('currentLocation');
+
+        fetch('/api/slots/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("성공적으로 생성되었습니다!");
+                location.href = '/game/cutscene?name=' + encodeURIComponent(name) + '&slotId=' + currentSlot;
+            } else {
+                alert("생성에 실패했습니다.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("서버 통신 중 오류 발생");
+        });
+
+        closeModal();
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('namingModal');
+        if (event.target == modal) closeModal();
+    }
+</script>
+</body>
+</html>

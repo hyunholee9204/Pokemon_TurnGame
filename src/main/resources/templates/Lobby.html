@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>The Awakening - Lobby</title>
+    <style>
+        body { margin: 0; background-color: #121212; color: #e0e0e0; font-family: 'Malgun Gothic', sans-serif; overflow: hidden; }
+        .wrapper { display: flex; flex-direction: column; height: 100vh; padding: 20px; box-sizing: border-box; gap: 20px; }
+
+        .top-section { display: flex; flex: 1.2; gap: 20px; }
+
+        .detail-panel {
+            flex: 1; background: rgba(30, 30, 30, 0.9); border: 2px solid #ffcc00; border-radius: 10px; padding: 20px;
+            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.2);
+        }
+        .detail-header { display: flex; align-items: center; gap: 20px; border-bottom: 1px solid #444; padding-bottom: 15px; }
+        .detail-img { width: 100px; height: 100px; background: #000; border-radius: 5px; border: 1px solid #ffcc00; overflow: hidden; }
+        .detail-img img { width: 100%; height: 100%; object-fit: cover; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; font-size: 0.95rem; }
+
+        .formation-panel {
+            flex: 1; background: rgba(20, 20, 20, 0.8); border: 2px solid #444; border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative;
+        }
+
+        .formation-container { display: flex; gap: 15px; margin-bottom: 20px; }
+
+        .slot-wrapper { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+        .formation-slot {
+            width: 100px; height: 140px; border: 2px dashed #666; border-radius: 10px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
+            background: rgba(0,0,0,0.2);
+        }
+        .formation-slot.selected { border-color: #ffcc00; background: rgba(255, 204, 0, 0.1); }
+        .formation-slot img { width: 70px; height: 70px; }
+
+        .slot-label { color: #ffcc00; font-size: 0.85rem; font-weight: bold; text-shadow: 0 0 5px rgba(0,0,0,1); }
+
+        .recommend-btn {
+            padding: 10px 25px; background: #222; border: 2px solid #ffcc00; color: #ffcc00;
+            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: 0.2s;
+        }
+        .recommend-btn:hover { background: #ffcc00; color: #000; }
+
+        .warning-text {
+            font-size: 0.8rem;
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 🛠️ 하단 섹션 수정: 내부 요소 배치를 위해 디스플레이 속성 제어 */
+        .bottom-section {
+            flex: 0.8; background: #1a1a1a; border: 2px solid #333; border-radius: 10px;
+            padding: 15px; display: flex; justify-content: space-between; align-items: center; gap: 20px; position: relative;
+        }
+
+        /* 포켓몬 카드들이 담기는 정렬 바 */
+        .pokemon-list-wrapper {
+            display: flex; gap: 15px; flex-wrap: nowrap;
+        }
+
+        .pokemon-card {
+            min-width: 120px; background: #2a2a2a; border: 1px solid #444; border-radius: 8px;
+            padding: 10px; text-align: center; cursor: pointer; transition: 0.2s;
+        }
+        .pokemon-card:hover { border-color: #ffcc00; transform: translateY(-5px); }
+        .pokemon-card.in-formation { opacity: 0.3; pointer-events: none; }
+
+        /* 💡 새로 추가된 우측 전략 가이드 보드 스타일 */
+        .strategy-guide-board {
+            flex: 1; max-width: 500px; height: 100%; background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #444; border-radius: 8px; padding: 12px 18px; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: center; margin-right: 180px; /* 버튼 공간 확보 */
+        }
+        .guide-title { font-size: 0.9rem; color: #ffcc00; font-weight: bold; margin-bottom: 6px; display: flex; align-items: center; gap: 5px;}
+        .guide-row { font-size: 0.8rem; line-height: 1.5; color: #ccc; margin: 3px 0; }
+        .guide-accent { color: #00f2ff; font-weight: bold; }
+        .guide-accent-red { color: #ff5555; font-weight: bold; }
+
+        /* 모험 시작 버튼 위치 최적화 */
+        .btn-start {
+            position: absolute; bottom: 15px; right: 15px; top: 15px; width: 150px;
+            background: #ffcc00; color: #000; font-weight: bold; border-radius: 5px;
+            cursor: pointer; border: none; font-size: 1.1rem; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .btn-start:hover { background: #ffe600; box-shadow: 0 0 15px rgba(255,204,0,0.4); }
+        .highlight { color: #ffcc00; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="top-section">
+        <div class="detail-panel">
+            <div class="detail-header">
+                <div class="detail-img" id="detail-img"></div>
+                <div>
+                    <h2 id="detail-name" class="highlight">포켓몬을 선택하세요</h2>
+                    <span id="detail-type" style="font-size:0.8rem; color:#aaa;">속성 정보</span>
+                </div>
+            </div>
+            <div class="stat-grid">
+                <div>체력: <span id="stat-hp" style="color:#ff4444;">-</span></div>
+                <div>속도: <span id="stat-spd" style="color:#44ff44;">-</span></div>
+                <div style="grid-column: span 2;">오의(奧義): <span id="stat-ultimate" class="highlight">-</span></div>
+            </div>
+            <p id="detail-desc" style="font-size:0.85rem; line-height:1.5; color:#ccc; margin-top:15px;"></p>
+        </div>
+
+        <div class="formation-panel">
+            <div class="formation-container">
+                <div class="slot-wrapper">
+                    <div class="formation-slot" id="slot-3" onclick="selectSlot(3)"></div>
+                    <div class="slot-label">후미</div>
+                </div>
+                <div class="slot-wrapper">
+                    <div class="formation-slot" id="slot-2" onclick="selectSlot(2)"></div>
+                    <div class="slot-label">중열</div>
+                </div>
+                <div class="slot-wrapper">
+                    <div class="formation-slot" id="slot-1" onclick="selectSlot(1)"></div>
+                    <div class="slot-label">중열</div>
+                </div>
+                <div class="slot-wrapper">
+                    <div class="formation-slot" id="slot-0" onclick="selectSlot(0)"></div>
+                    <div class="slot-label">선두</div>
+                </div>
+            </div>
+            <button class="recommend-btn" onclick="applyRecommendation()">추천 배치</button>
+            <br>
+            <div class="warning-text">
+                ⚠️포메이션은 한번 결정하면 변경이 불가능하니 신중히 선택하세요!⚠️
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-section">
+        <div class="pokemon-list-wrapper" id="pokemon-list"></div>
+
+        <div class="strategy-guide-board">
+            <div class="guide-title">💡 포메이션 배치 전략 가이드</div>
+            <div class="guide-row">🛡️ <span class="guide-accent-red">선두 (Front):</span> 적의 공격을 가장 먼저 맞이하므로, <span class="guide-accent">체력과 방어력</span>이 높은 포켓몬(예: 꼬부기)을 배치하는 것이 안전합니다.</div>
+            <div class="guide-row">⚔️ <span class="guide-accent">중열 (Middle):</span> 공방 밸런스가 좋은 딜러형 포켓몬이나 서포터를 배치하여 유연하게 대응합니다.</div>
+            <div class="guide-row">🌿 <span class="guide-accent">후미 (Back):</span> 아군의 보호를 받으며 안전하게 공격 및 치유를 집중해야 하는 <span class="guide-accent">핵심 딜러나 힐러</span>를 배치하는 것이 효율적입니다.</div>
+        </div>
+
+        <button class="btn-start" onclick="startGame()">모험 시작</button>
+    </div>
+</div>
+
+<script>
+    const pokemonData = [
+        { id: 'pika', name: '피카츄', type: '전기', hp: 110, speed: 120, img: '/img/피카츄.webp', detailImg: '/img/피카츄2.webp', desc: '전기 에너지를 압축하여 강력한 오의를 사용하는 피카츄입니다.', ultimate: '이지스 오브 인드라' },
+        { id: 'pairi', name: '파이리', type: '불꽃', hp: 130, speed: 100, img: '/img/파이리.webp', detailImg: '/img/파이리2.webp', desc: '뜨거운 불꽃으로 적을 압도하는 밸런스형 포켓몬입니다.', ultimate: '프로메테우스 하이드라 붕괴' },
+        { id: 'ggu', name: '꼬부기', type: '물', hp: 180, speed: 80, img: '/img/꼬부기.webp', detailImg: '/img/꼬부기2.webp', desc: '높은 체력과 방어력을 보유한 팀의 든든한 방패입니다.', ultimate: '글레이셔 제네시스' },
+        { id: 'seed', name: '이상해씨', type: '풀', hp: 150, speed: 90, img: '/img/이상해씨.webp', detailImg: '/img/이상해씨2.webp', desc: '아군을 치유하고 서포트하는 데 특화된 포켓몬입니다.', ultimate: '만물소생' }
+    ];
+
+    let currentSelectedSlot = null;
+    let formation = [null, null, null, null];
+
+    function init() { renderPokemonList(); }
+
+    function renderPokemonList() {
+        const listEl = document.getElementById('pokemon-list');
+        listEl.innerHTML = '';
+        pokemonData.forEach(p => {
+            const isUsed = formation.includes(p.id);
+            const card = document.createElement('div');
+            card.className = `pokemon-card ${isUsed ? 'in-formation' : ''}`;
+            card.innerHTML = `<img src="${p.img}" style="width:60px;"><p>${p.name}</p>`;
+            card.onclick = () => {
+                showDetail(p);
+                if (currentSelectedSlot !== null && !isUsed) addToFormation(p.id);
+            };
+            listEl.appendChild(card);
+        });
+    }
+
+    function showDetail(p) {
+        document.getElementById('detail-name').innerText = p.name;
+        document.getElementById('detail-type').innerText = `${p.type} 속성`;
+        document.getElementById('stat-hp').innerText = p.hp;
+        document.getElementById('stat-spd').innerText = p.speed;
+        document.getElementById('stat-ultimate').innerText = p.ultimate;
+        document.getElementById('detail-desc').innerText = p.desc;
+        document.getElementById('detail-img').innerHTML = `<img src="${p.detailImg}">`;
+    }
+
+    function selectSlot(idx) {
+        if (formation[idx]) {
+            formation[idx] = null;
+            updateFormationUI();
+            renderPokemonList();
+            return;
+        }
+        currentSelectedSlot = idx;
+        document.querySelectorAll('.formation-slot').forEach((s, i) => {
+            const visualIdx = 3 - idx;
+            s.classList.toggle('selected', (3 - i) === idx);
+        });
+    }
+
+    function addToFormation(pokemonId) {
+        formation[currentSelectedSlot] = pokemonId;
+        currentSelectedSlot = null;
+        document.querySelectorAll('.formation-slot').forEach(s => s.classList.remove('selected'));
+        updateFormationUI();
+        renderPokemonList();
+    }
+
+    function updateFormationUI() {
+        formation.forEach((id, idx) => {
+            const slotEl = document.getElementById(`slot-${idx}`);
+            if (id) {
+                const p = pokemonData.find(item => item.id === id);
+                slotEl.innerHTML = `<img src="${p.img}">`;
+            } else {
+                slotEl.innerHTML = '';
+            }
+        });
+    }
+
+    function applyRecommendation() {
+        formation = ['ggu', 'pika', 'pairi', 'seed'];
+        updateFormationUI();
+        renderPokemonList();
+    }
+
+    function startGame() {
+        if (formation.includes(null)) { alert("포메이션을 채워주세요!"); return; }
+
+        localStorage.setItem('selectedFormation', JSON.stringify(formation));
+        location.href = '/game/map';
+    }
+    init();
+</script>
+</body>
+</html>

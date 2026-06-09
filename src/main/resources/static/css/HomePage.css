@@ -1,0 +1,310 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url("/images/background_pattern.jpg");
+    font-family: 'NanumGothic', sans-serif;
+}
+
+nav {
+    background: rgba(0, 0, 0, 0.85); /* 약간 더 진한 블랙으로 고급스럽게 */
+    color: white;
+    display: flex;
+    justify-content: space-between; /* 로고는 왼쪽, 메뉴는 오른쪽 */
+    align-items: center;            /* 세로 중앙 정렬 */
+    padding: 10px 50px;             /* 좌우 여백 확보 */
+    height: 60px;
+}
+
+nav ul {
+    list-style: none;               /* 불렛 포인트 제거 */
+    display: flex;                  /* 메뉴 항목 가로 정렬 */
+    gap: 30px;                      /* 메뉴 간격 */
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+nav ul li:hover {
+    color: #ffcc00;                 /* 마우스 올리면 포켓몬 노란색으로 변하게 */
+}
+
+.main-banner {
+    width: 100%;
+    height: 550px;
+    /* 이미지 경로와 그라데이션 유지 */
+    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)),
+                      url('../img/HomePage_pokemon.png');
+
+    /* 수정된 부분 시작 */
+    background-size: contain;    /* 이미지가 잘리지 않고 전체가 다 보이도록 설정 */
+    background-position: center; /* 이미지를 정중앙에 배치 */
+    background-repeat: no-repeat;
+    background-color: #000;      /* 이미지 비율 때문에 양옆에 빈 공간이 생길 경우를 대비해 검은색 배경 추가 */
+    /* 수정된 부분 끝 */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+}
+
+.banner-content h2 {
+    color: #ffffff;                 /* 글자색을 흰색으로 변경 */
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 20px;
+
+    /* [핵심] 검은 로고 위에서도 잘 보이게 강력한 그림자 추가 */
+    text-shadow:
+        -2px -2px 0 #000,
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0px  4px 10px rgba(0,0,0,0.8);
+
+    letter-spacing: -1px;           /* 자간 조절로 세련미 추가 */
+}
+
+/* 3. 시작 섹션 간격 조절 */
+.start-section {
+    margin-top: 30px;
+}
+
+.start-btn {
+    width: 250px;
+    height: 80px;
+    background: #ffcc00;
+    border: 5px solid #ffaa00;
+    border-radius: 50px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    transition: 0.3s;
+}
+
+.start-btn:hover {
+    transform: scale(1.1);
+    background: #ffdd44;
+}
+
+/* 하단 정보 섹션 전체 레이아웃 */
+.info-section {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: 1100px;
+    margin: 40px auto;
+    padding: 0; /* 내부에서 padding 조절 */
+    background: transparent; /* 배경을 투명하게 해서 박스들이 떠 보이게 */
+}
+
+/* 좌측 공지사항/업데이트 카드 박스 */
+.notice {
+    flex: 2;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-top: 5px solid #ffcc00; /* 포켓몬 포인트 컬러 */
+}
+
+.notice h3 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.notice h3::after {
+    content: 'MORE +';
+    font-size: 11px;
+    color: #999;
+    cursor: pointer;
+}
+
+.notice p {
+    font-size: 14px;
+    color: #555;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    margin: 0;
+}
+
+/* 우측 로그인 박스 디자인 (진짜 게임 런처 느낌) */
+.login-box {
+    flex: 1;
+    background: #2c3e50; /* 어두운 네이비톤으로 포인트 */
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: white;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background: #34495e;
+    color: white;
+    outline: none;
+}
+
+.login-box input::placeholder {
+    color: #95a5a6;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 15px;
+    background: #ffcc00;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+    margin-top: 10px;
+}
+
+.login-box button:hover {
+    background: #ffdd44;
+    transform: translateY(-2px);
+}
+
+/* 현호님 기존 코드 유지... */
+
+.login-helper {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    font-size: 13px;
+}
+
+.login-helper a {
+    color: #bdc3c7; /* 차분한 그레이톤 */
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.login-helper a:hover {
+    color: #ffcc00; /* 호버 시 버튼색과 통일감 유지 */
+}
+
+.user-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 0;
+}
+
+.user-stats {
+    background: #34495e;
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.user-stats p {
+    margin: 5px 0;
+    color: #ecf0f1;
+}
+
+.divider {
+    color: #7f8c8d;
+}
+
+/* 미디어 섹션 설정 */
+.media-section {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    width: 1100px;
+    margin: 0 auto 50px;
+}
+
+/* 가이드 아이콘 그리드 */
+.guide-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.guide-item {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.guide-item span { font-size: 30px; display: block; margin-bottom: 5px; }
+.guide-item p { margin: 0; font-weight: bold; color: #333; }
+.guide-item:hover { transform: translateY(-5px); background: #fffbe6; }
+
+/* 스크린샷 갤러리 */
+.screenshot-gallery {
+    flex: 1.5;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.screenshot-gallery h4 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+
+.gallery-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.thumb {
+    flex: 1;
+    height: 120px;
+    background: #ddd; /* 나중에 실제 게임 스크린샷 이미지로 교체 */
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.thumb:hover { filter: brightness(0.8); cursor: pointer; }
+
+/* 푸터 디자인 */
+footer {
+    background: #222;
+    color: #888;
+    padding: 40px 0;
+    margin-top: 50px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.footer-logo {
+    font-weight: bold;
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.footer-links { margin-bottom: 15px; }
+.footer-links span { margin: 0 10px; cursor: pointer; }
+.footer-links span:hover { color: white; }

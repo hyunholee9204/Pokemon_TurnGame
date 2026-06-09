@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>포켓몬 도감</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Malgun Gothic', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .type-filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .type-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .type-btn:hover { transform: scale(1.1); }
+
+        .btn-fire { background-color: #FF4422; box-shadow: 0 0 15px #FF4422; color: black; text-shadow: none; }
+        .btn-water { background-color: #3399FF; box-shadow: 0 0 15px #3399FF; color: black; text-shadow: none; }
+        .btn-grass { background-color: #77CC55; box-shadow: 0 0 15px #77CC55; color: black; text-shadow: none; }
+        .btn-electric { background-color: #FFCC33; box-shadow: 0 0 15px #FFCC33; color: black; text-shadow: none; }
+
+        .pokedex-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5개 컬럼 고정 */
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pokemon-card {
+            background: #252525;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: background 0.3s;
+        }
+
+        .pokemon-card:hover { background: #353535; }
+
+        .pokemon-card img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+
+        .id-no { color: #888; font-size: 12px; }
+        .p-name { font-size: 18px; margin: 10px 0; }
+
+        .home-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #444;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .home-btn:hover { background-color: #666; }
+    </style>
+</head>
+<body>
+    <a href="/homeMenu" class="home-btn">🏠 Home</a>
+    <h1 style="text-align: center;">POKÉMON</h1>
+
+    <div class="type-filter-container">
+        <button class="type-btn btn-fire" onclick="filterType('불꽃')">불</button>
+        <button class="type-btn btn-water" onclick="filterType('물')">물</button>
+        <button class="type-btn btn-grass" onclick="filterType('풀')">풀</button>
+        <button class="type-btn btn-electric" onclick="filterType('전기')">전기</button>
+    </div>
+
+    <div class="pokedex-grid" id="pokedexGrid">
+        <div class="pokemon-card" th:each="pokemon : ${pokemonList}" th:attr="data-type=${pokemon.type}">
+            <div class="id-no" th:text="'No.' + ${pokemon.pokeId}"></div>
+            <img th:src="@{'/img/' + ${pokemon.imgPath}}" alt="pokemon">
+            <div class="p-name" th:text="${pokemon.name}"></div>
+            <div style="font-size: 12px; color: #aaa;" th:text="${pokemon.type}"></div>
+        </div>
+    </div>
+
+<script>
+    function filterType(type) {
+        const cards = document.querySelectorAll('.pokemon-card');
+        cards.forEach(card => {
+            if (card.getAttribute('data-type') === type) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+</script>
+</body>
+</html>

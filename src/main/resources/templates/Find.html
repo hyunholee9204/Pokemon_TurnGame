@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계정 찾기 - TurnGame of Pokemon</title>
+    <style>
+        /* register.html과 동일한 공통 스타일 적용 */
+        body {
+            margin: 0; padding: 0; display: flex; justify-content: center;
+            align-items: center; min-height: 100vh; background: #1a252f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .find-container { width: 100%; max-width: 450px; padding: 20px; }
+
+        .login-box {
+            background: #2c3e50; padding: 40px; border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3); display: flex;
+            flex-direction: column; gap: 15px; color: white; text-align: center;
+        }
+
+        .login-box h2 { margin: 0 0 10px 0; color: #ffcc00; font-size: 28px; }
+
+        .login-box p { font-size: 14px; color: #bdc3c7; margin-bottom: 20px; }
+
+        /* 탭 메뉴 전용 스타일 */
+        .tab-menu {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px !important;
+            font-size: 14px !important;
+            background: #34495e !important;
+            color: #bdc3c7 !important;
+            margin-top: 0 !important;
+            border-radius: 6px !important;
+        }
+
+        .tab-btn.active {
+            background: #ffcc00 !important;
+            color: #2c3e50 !important;
+        }
+
+        .login-box input {
+            width: 100%; padding: 14px; border: none; border-radius: 6px;
+            background: #34495e; color: white; outline: none; box-sizing: border-box;
+        }
+
+        .login-box button {
+            width: 100%; padding: 15px; background: #ffcc00; border: none;
+            border-radius: 6px; font-weight: bold; font-size: 16px;
+            cursor: pointer; transition: 0.2s; margin-top: 10px; color: #2c3e50;
+        }
+
+        .login-box button:hover { background: #ffdd44; transform: translateY(-2px); }
+
+        .login-helper { margin-top: 20px; display: flex; justify-content: center; font-size: 13px; }
+
+        .login-helper a { color: #bdc3c7; text-decoration: none; }
+        .login-helper a:hover { color: #ffcc00; }
+    </style>
+</head>
+<body>
+
+<div class="find-container">
+    <div class="login-box">
+        <h2>정보 찾기</h2>
+        <p>가입 시 등록한 정보를 입력해주세요.</p>
+
+        <div class="tab-menu">
+            <button class="tab-btn active">아이디 찾기</button>
+            <button class="tab-btn">비밀번호 찾기</button>
+        </div>
+
+        <form action="/find-account" method="POST">
+            <input type="email" name="email" placeholder="가입 이메일 주소" required>
+            <button type="submit">인증 정보 발송</button>
+        </form>
+
+        <div class="login-helper">
+            <a href="HomePage.html">로그인 화면으로 돌아가기</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Relic Shop - Ancient Artifacts</title>
+    <style>
+        :root {
+            --bg-dark: #0f0f1a;
+            --neon-purple: #a100ff;
+            --neon-blue: #00f2ff;
+            --neon-gold: #ffcc00;
+            --glass-bg: rgba(255, 255, 255, 0.07);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --modal-bg: rgba(10, 10, 20, 0.95);
+        }
+
+        body {
+            margin: 0; padding: 0;
+            background: var(--bg-dark);
+            background-image: linear-gradient(rgba(15, 15, 26, 0.9), rgba(15, 15, 26, 0.9)), url('/img/어드벤처.png');
+            background-size: cover;
+            color: white; font-family: 'Malgun Gothic', sans-serif;
+            overflow: hidden;
+        }
+
+        .shop-wrapper { display: flex; width: 100vw; height: 100vh; }
+
+        .top-bar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 70px;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 40px; box-sizing: border-box; z-index: 100;
+        }
+
+        .btn-exit {
+            padding: 12px; background: transparent; border: 1px solid var(--neon-blue);
+            color: var(--neon-blue); font-weight: bold; border-radius: 5px;
+            cursor: pointer; margin-bottom: 30px; transition: 0.3s;
+            text-align: center; text-decoration: none; display: block;
+        }
+        .btn-exit:hover { background: var(--neon-blue); color: #000; box-shadow: 0 0 15px var(--neon-blue); }
+
+        .gold-display {
+            background: rgba(255, 204, 0, 0.1); border: 1px solid var(--neon-gold);
+            padding: 10px 25px; border-radius: 30px; color: var(--neon-gold);
+            font-weight: bold; font-size: 18px; display: flex; align-items: center; gap: 10px;
+        }
+
+        .sidebar {
+            width: 320px; background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px); border-right: 2px solid var(--neon-purple);
+            display: flex; flex-direction: column; padding: 100px 25px 25px 25px;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .party-list { display: flex; flex-direction: column; gap: 12px; }
+        .party-item {
+            display: flex; align-items: center; gap: 15px; padding: 15px;
+            background: var(--glass-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .party-item.active { border-color: var(--neon-purple); background: rgba(161, 0, 255, 0.15); }
+        .party-item img { width: 55px; height: 55px; object-fit: contain; }
+
+        .shop-main { flex: 1; padding: 100px 50px 50px 50px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+
+        .relic-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 25px; width: 100%; max-width: 1000px;
+        }
+        .relic-card {
+            background: var(--glass-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 25px; display: flex; flex-direction: column;
+            align-items: center; text-align: center; transition: 0.3s; position: relative;
+        }
+        .relic-card:not(.sold-out):hover { border-color: var(--neon-gold); transform: translateY(-5px); }
+
+        /* [수정] 유물 이미지 영역에 고정된 높이와 중앙 정렬을 지정하여 정렬 문제 해결 */
+        .relic-img-box {
+            height: 120px; /* 고정된 높이 */
+            display: flex;
+            align-items: center; /* 세로 중앙 정렬 */
+            justify-content: center; /* 가로 중앙 정렬 */
+            margin-bottom: 15px;
+        }
+
+        .relic-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .relic-name { font-size: 16px; font-weight: bold; margin-bottom: 8px; }
+        .relic-price { color: var(--neon-gold); font-size: 14px; margin-bottom: 15px; }
+
+        .btn-buy {
+            width: 100%; padding: 10px; background: var(--neon-blue);
+            color: black; border: none; border-radius: 5px; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+
+        .relic-card.sold-out { opacity: 0.5; filter: grayscale(100%); cursor: not-allowed; }
+        .sold-out-overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-15deg);
+            border: 3px solid #ff4d4d; color: #ff4d4d; padding: 5px 15px;
+            font-size: 24px; font-weight: bold; border-radius: 10px; background: rgba(0,0,0,0.7);
+        }
+
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); display: none;
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: var(--modal-bg); border: 2px solid var(--neon-gold);
+            padding: 30px; border-radius: 20px; width: 350px; text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <button class="btn-exit" onclick="history.back()">마을로 이동</button>
+    <div class="gold-display">🪙 <span id="myGold">15,000</span></div>
+</div>
+
+<div class="shop-wrapper">
+    <aside class="sidebar">
+        <div style="font-size: 12px; color: var(--neon-purple); margin-bottom: 20px; font-weight: bold;">BUYER SELECTION</div>
+        <div class="party-list" id="partyList"></div>
+    </aside>
+
+    <main class="shop-main">
+        <div class="relic-grid" id="relicGrid"></div>
+    </main>
+</div>
+
+<div id="buyModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 id="modalRelicName">유물 이름</h3>
+        <p id="modalDesc" style="color: #aaa; font-size: 13px;"></p>
+        <p id="modalPrice" style="color: var(--neon-gold); font-weight: bold;"></p>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button onclick="confirmPurchase()" style="flex:1; padding:10px; background:var(--neon-gold); border:none; border-radius:5px; font-weight:bold; cursor:pointer;">구입</button>
+            <button onclick="closeModal()" style="flex:1; padding:10px; background:#333; color:white; border:none; border-radius:5px; cursor:pointer;">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let userGold = 100;
+    let relicShopList = []; // DB에서 로드될 예정
+    let purchaseRecord = JSON.parse(localStorage.getItem('relicPurchases') || '{}');
+    let currentPokemon = null;
+    let pendingRelic = null;
+
+    // 포켓몬 데이터 (DB 연동 시 이 부분도 fetch 가능)
+    const pokemonData = [
+        { id: 'pika', name: '피카츄' },
+        { id: 'pairi', name: '파이리' },
+        { id: 'ggu', name: '꼬부기' },
+        { id: 'seed', name: '이상해씨' }
+    ];
+
+    async function init() {
+        document.getElementById('myGold').innerText = userGold.toLocaleString();
+        renderSidebar();
+        await loadRelicPedia();
+    }
+
+    async function loadRelicPedia() {
+        try {
+            const response = await fetch('/api/relics/pedia');
+            relicShopList = await response.json();
+            renderRelicGrid();
+        } catch (e) {
+            console.error("데이터 로드 실패:", e);
+        }
+    }
+
+    function renderSidebar() {
+        const list = document.getElementById('partyList');
+        const savedIds = JSON.parse(localStorage.getItem('selectedFormation') || '["pika", "pairi", "ggu", "seed"]');
+
+        list.innerHTML = '';
+        savedIds.forEach((id, index) => {
+            const p = pokemonData.find(pd => pd.id === id) || { name: id.toUpperCase() };
+            const item = document.createElement('div');
+            item.className = `party-item ${index === 0 ? 'active' : ''}`;
+            item.innerHTML = `
+                <img src="/img/${p.name}.webp" onerror="this.src='/img/default.webp'">
+                <div class="info">
+                    <div style="font-weight: bold;">${p.name}</div>
+                    <div style="font-size: 11px; color: #888;">BUYER</div>
+                </div>`;
+            item.onclick = () => {
+                document.querySelectorAll('.party-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                currentPokemon = p;
+                renderRelicGrid();
+            };
+            list.appendChild(item);
+            if(index === 0) currentPokemon = p;
+        });
+    }
+
+    // [수정] 유물 그리드 렌더링 시 이미지 영역 정렬 문제 해결
+    function renderRelicGrid() {
+        const grid = document.getElementById('relicGrid');
+        grid.innerHTML = '';
+
+        relicShopList.forEach(relic => {
+            const card = document.createElement('div');
+            card.className = 'relic-card';
+            const buyerId = purchaseRecord[relic.relicId];
+
+            if (buyerId) {
+                card.classList.add('sold-out');
+                card.innerHTML = `
+                    <div class="sold-out-overlay">품절</div>
+                    <div class="relic-img-box"><img src="/img/relics/${relic.imgPath}" class="relic-img"></div>
+                    <div class="relic-name">${relic.relicName}</div>
+                    <button class="btn-buy" style="background:#444;" disabled>${buyerId === currentPokemon.id ? '소유 중' : '품절'}</button>`;
+            } else {
+                card.innerHTML = `
+                    <div class="relic-img-box"><img src="/img/relics/${relic.imgPath}" class="relic-img"></div>
+                    <div class="relic-name">${relic.relicName}</div>
+                    <div class="relic-price">🪙 ${relic.price.toLocaleString()}</div>
+                    <button class="btn-buy" onclick='openBuyModal(${JSON.stringify(relic)})'>구입하기</button>`;
+            }
+            grid.appendChild(card);
+        });
+    }
+
+    function openBuyModal(relic) {
+        pendingRelic = relic;
+        document.getElementById('modalRelicName').innerText = relic.relicName;
+        document.getElementById('modalDesc').innerText = relic.description;
+        document.getElementById('modalPrice').innerText = `가격: ${relic.price.toLocaleString()} Gold`;
+        document.getElementById('buyModal').style.display = 'flex';
+    }
+
+    function confirmPurchase() {
+        if (userGold < pendingRelic.price) return alert("골드가 부족합니다!");
+        userGold -= pendingRelic.price;
+        document.getElementById('myGold').innerText = userGold.toLocaleString();
+
+        purchaseRecord[pendingRelic.relicId] = currentPokemon.id;
+        localStorage.setItem('relicPurchases', JSON.stringify(purchaseRecord));
+
+        closeModal();
+        renderRelicGrid();
+    }
+
+    function closeModal() { document.getElementById('buyModal').style.display = 'none'; }
+    window.onload = init;
+</script>
+</body>
+</html>

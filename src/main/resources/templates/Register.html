@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>트레이너 등록 - TurnGame of Pokemon</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a252f;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: #2c3e50;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+
+        /* form 내부 요소들(input, button) 사이의 간격 설정 */
+        .login-box form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px; /* 입력창 사이의 간격 */
+        }
+
+        .login-box h2 {
+            margin: 0 0 10px 0;
+            color: #ffcc00;
+            font-size: 28px;
+        }
+
+        .login-box p {
+            font-size: 14px;
+            color: #bdc3c7;
+            margin-bottom: 25px; /* 문구 아래 여백을 좀 더 줌 */
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 6px;
+            background: #34495e;
+            color: white;
+            outline: none;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        .login-box input:focus {
+            background: #3d566e;
+            box-shadow: 0 0 0 2px #ffcc00;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 15px;
+            background: #ffcc00;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px; /* 마지막 input과의 추가 간격 */
+            color: #2c3e50;
+        }
+
+        .login-box button:hover {
+            background: #ffdd44;
+            transform: translateY(-2px);
+        }
+
+        .login-helper {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .login-helper a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .login-helper a:hover {
+            color: #ffcc00;
+        }
+    </style>
+</head>
+<body>
+
+<div class="register-container">
+    <div class="login-box">
+        <h2>트레이너 등록</h2>
+        <p>404마리의 포켓몬이 당신을 기다립니다!</p>
+
+        <form action="/register" method="POST">
+            <input type="text" name="userId" placeholder="아이디 (4~12자)" required>
+            <input type="password" name="userPw" placeholder="비밀번호" required>
+            <input type="password" name="userPwConfirm" placeholder="비밀번호 확인" required>
+            <input type="text" name="nickname" placeholder="인게임 닉네임" required>
+            <input type="email" name="email" placeholder="이메일 주소" required>
+
+            <button type="submit">배틀 월드 입성하기</button>
+        </form>
+        <div class="login-helper">
+            <a href="HomePage.html">이미 트레이너이신가요? 로그인</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

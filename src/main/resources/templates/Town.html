@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>The Awakening - 포켓몬 시티</title>
+    <style>
+        :root {
+            --gold: #ffcc00;
+            --panel-bg: rgba(15, 15, 15, 0.9);
+            --blue-highlight: #00f2ff;
+        }
+
+        body {
+            margin: 0;
+            background-color: #000;
+            color: white;
+            font-family: 'Malgun Gothic', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('/img/마을.png');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+        }
+
+        .btn-continue {
+            position: fixed;
+            bottom: 30px;
+            left: 50px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #00f2ff, #0066ff);
+            color: #ffffff;
+            font-weight: 900;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.4), inset 0 0 10px rgba(255, 255, 255, 0.2);
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            transition: all 0.4s ease;
+            z-index: 100;
+        }
+
+        .btn-continue:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.8);
+            background: linear-gradient(135deg, #00ffff, #0077ff);
+        }
+
+        .town-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            gap: 40px;
+            padding-top: 15vh;
+            box-sizing: border-box;
+        }
+
+        .facility-card {
+            width: 250px;
+            height: 250px;
+            background: var(--panel-bg);
+            border: 2px solid #444;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .facility-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-15px);
+            box-shadow: 0 0 30px rgba(255, 204, 0, 0.2);
+        }
+
+        .facility-icon { font-size: 80px; margin-bottom: 20px; }
+        .facility-name { font-size: 1.5rem; font-weight: bold; color: #ffffff; margin-bottom: 10px; }
+        .facility-desc { font-size: 0.9rem; color: #aaa; text-align: center; padding: 0 20px; line-height: 1.4; }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 50px;
+            box-sizing: border-box;
+        }
+
+        .gold-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 25px;
+            border-radius: 30px;
+            border: 1px solid var(--gold);
+        }
+    </style>
+</head>
+<body>
+<button class="btn-continue" onclick="location.href='/game/map'">
+    탐험 이어서 하기
+</button>
+
+<div class="town-container">
+    <div class="facility-card" onclick="location.href='/game/center'">
+        <div class="facility-icon">🏥</div>
+        <div class="facility-name">포켓몬 센터</div>
+        <div class="facility-desc">4마리 포켓몬의<br>전투 스킬을 교체합니다.</div>
+    </div>
+
+    <div class="facility-card" onclick="location.href='/game/relic'">
+        <div class="facility-icon">💎</div>
+        <div class="facility-name">유물 상점</div>
+        <div class="facility-desc">전투를 돕는<br>신비한 유물을 구매합니다.</div>
+    </div>
+
+    <div class="facility-card" onclick="location.href='/game/enhance'">
+        <div class="facility-icon">⚡</div>
+        <div class="facility-name">강화 센터</div>
+        <div class="facility-desc">보유한 스킬의<br>위력을 강화합니다.</div>
+    </div>
+</div>
+
+<div class="bottom-bar">
+    <div class="gold-display">
+        <span style="color:var(--gold); font-size:1.2rem;">🪙</span>
+        <span id="gold-amount" style="font-size:1.5rem; font-weight:bold; color:white;">0</span>
+        <span style="color:var(--gold); font-weight:bold;">G</span>
+    </div>
+</div>
+
+<script>
+    let userGold = parseInt(localStorage.getItem('userGold')) || 100;
+
+    function init() {
+        updateGoldDisplay();
+        autoSaveProgress();
+    }
+
+    function updateGoldDisplay() {
+        document.getElementById('gold-amount').innerText = userGold.toLocaleString();
+    }
+
+    function autoSaveProgress() {
+        const slotId = localStorage.getItem('currentSlotId');
+
+        localStorage.setItem('currentLocation', 'n1');
+
+        if (!slotId) {
+            console.warn("현재 진행 중인 슬롯 ID가 없습니다. (테스트 환경일 수 있음)");
+            return;
+        }
+
+        const requestData = {
+            slotId: parseInt(slotId),
+            lastNode: 'n1'
+        };
+
+        fetch('/api/slots/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestData)
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("DB 업데이트 완료: 마을(n1) 위치 및 플레이 시간 갱신됨");
+            }
+        })
+        .catch(error => console.error('자동 저장 오류:', error));
+    }
+
+    function openSkillSetting() { alert("포켓몬 센터: 스킬 세팅 화면 준비 중"); }
+    function openRelicShop() { alert("유물 상점: 아이템 목록 준비 중"); }
+    function openUpgradeCenter() { alert("강화 센터: 스킬 강화 메뉴 준비 중"); }
+
+    window.addEventListener('load', init);
+</script>
+</body>
+</html>

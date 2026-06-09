@@ -1,0 +1,65 @@
+.menu-body {
+    margin: 0;
+    padding: 0;
+    background: #000 url('../img/menu_bg.jpg') no-repeat center center;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Dotum', sans-serif;
+}
+
+.menu-container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 50px;
+    border: 3px solid #ffcc00;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
+}
+
+.game-title {
+    color: #ffcc00;
+    font-size: 50px;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 5px #000;
+}
+
+/* 컨테이너 내부의 버튼들을 중앙으로 정렬 */
+.button-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center;
+    gap: 15px;
+    width: 100%; /* 부모 너비를 꽉 채워서 중앙 기준을 잡음 */
+}
+
+.menu-btn {
+    width: 350px; /* 버튼 너비를 고정하여 통일감 부여 */
+    padding: 18px;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+    background: #444;
+    border: 2px solid #666;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* 패딩이 너비에 영향을 주지 않도록 설정 */
+}
+
+.menu-btn:hover {
+    background: #ffcc00;
+    color: #000;
+    border-color: #ffaa00;
+    transform: scale(1.05); /* 마우스 올리면 살짝 커지는 효과 */
+}
+
+/* 데이터가 없을 때 비활성화 스타일 */
+.menu-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
+}
