@@ -28,10 +28,10 @@
 
 ---
 
-## 🛠️ Tech Stacks (기술 스택)
-
-- **Languages:** JavaScript (ES6+), Python
-- **Libraries & Tools:** Pandas (데이터 구조 설계 및 스탯 밸런싱 검증)
+### 💻 Development Languages & Environment
+- **Frontend:** HTML5, CSS3, JavaScript (ES6+) — 웹 기반 배틀 UI 인터페이스 및 동적 렌더링 구현
+- **Backend/Logic:** Java — 전투 핵심 연산 및 시스템 비즈니스 로직 설계
+- **Data Format:** JSON — 포켓몬 스탯 프리셋, 스킬 프리셋, 유물(Relic) 효과 스펙 데이터 구조화 및 관리
 
 ---
 
